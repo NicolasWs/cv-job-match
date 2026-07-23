@@ -122,8 +122,6 @@ def run():
             with client.messages.stream(
                 model=MODEL,
                 max_tokens=20000,
-                thinking={"type": "adaptive"},
-                output_config={"effort": "medium"},
                 system=system,
                 messages=[{"role": "user", "content": user}],
             ) as stream:
