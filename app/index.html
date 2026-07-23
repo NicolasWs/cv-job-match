@@ -174,27 +174,47 @@ async function runStream() {
   $("runBtn").disabled = true;
   $("output").innerHTML = ""; $("status").textContent = "Claude is working…";
   let buf = "";
+  function showError(msg) {
+    console.error("[cv-job-match]", msg);
+    $("status").textContent = "Error: " + msg;
+    $("output").innerHTML = renderMd("**Error**\n\n```\n" + msg + "\n```\n\nOpen the browser console (Cmd+Option+J) and the terminal running `python3 app/server.py` for more detail.");
+  }
   try {
     const resp = await fetch("/api/run", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload())});
+
+    // Validation errors (missing job description, bad action) return plain JSON
+    // with a 4xx/5xx status, not an SSE stream — handle that path separately.
+    if (!resp.ok) {
+      let msg = resp.status + " " + resp.statusText;
+      try { const j = await resp.json(); if (j.error) msg = j.error; } catch {}
+      showError(msg);
+      return;
+    }
+
     const reader = resp.body.getReader();
     const dec = new TextDecoder();
     let carry = "";
     while (true) {
       const {value, done} = await reader.read();
-      if (done) break;
+      if (done) {
+        if (carry.trim()) console.warn("[cv-job-match] unprocessed trailing SSE data:", carry);
+        break;
+      }
       carry += dec.decode(value, {stream:true});
       const chunks = carry.split("\n\n"); carry = chunks.pop();
       for (const c of chunks) {
         const line = c.replace(/^data: /, "");
         if (!line) continue;
-        let msg; try { msg = JSON.parse(line); } catch { continue; }
+        let msg;
+        try { msg = JSON.parse(line); }
+        catch (parseErr) { console.warn("[cv-job-match] failed to parse SSE frame:", line, parseErr); continue; }
         if (msg.text) { buf += msg.text; $("output").innerHTML = renderMd(buf); $("status").textContent = "Streaming…"; }
-        else if (msg.error) { $("status").textContent = "Error: " + msg.error; }
-        else if (msg.done) { $("status").textContent = "Done."; }
+        else if (msg.error) { showError(msg.error); }
+        else if (msg.done) { $("status").textContent = buf ? "Done." : "Done (empty response — check server terminal)."; }
       }
     }
   } catch (e) {
-    $("status").textContent = "Error: " + e.message;
+    showError(e.message);
   } finally {
     $("runBtn").disabled = false;
   }

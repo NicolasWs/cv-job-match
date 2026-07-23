@@ -25,7 +25,8 @@ export ANTHROPIC_API_KEY=sk-ant-...       # your own key
 python app/server.py
 ```
 
-Then open **http://localhost:5000**.
+Then open **http://localhost:5001**. (Port 5000 is used by AirPlay Receiver on
+recent macOS, so the app defaults to 5001 to avoid that conflict.)
 
 ## How it works
 
@@ -45,3 +46,27 @@ Then open **http://localhost:5000**.
   canonical tracker; paste the row into it, or update it from Claude Code.
 - **Local only:** binds to `127.0.0.1`. Don't expose it publicly — it holds no
   auth and would run API calls on your key.
+
+## Troubleshooting
+
+If clicking **Run** shows nothing:
+
+1. **Check the terminal running `python3 app/server.py`.** Every run prints a
+   `[run] action=... system_chars=... user_chars=...` line, and any failure
+   prints a full traceback plus a one-line summary. This is the fastest way
+   to see what actually happened.
+2. **Check the browser console** (Cmd+Option+J in Chrome/Arc, or
+   Cmd+Option+I → Console). The app now logs parse issues and shows errors
+   directly in the output panel instead of failing silently.
+3. **Test the backend directly, bypassing the browser:**
+   ```bash
+   curl -N -X POST http://127.0.0.1:5001/api/run \
+     -H "Content-Type: application/json" \
+     -d '{"action":"cv-match","company":"Test","role":"Test","job_description":"Product Manager role focused on data platforms."}'
+   ```
+   You should see a stream of `data: {"text": "..."}` lines. If instead you
+   see one `data: {"error": "..."}` line, that error text tells you exactly
+   what's wrong (most commonly: `ANTHROPIC_API_KEY` not set or invalid, or no
+   access to the `claude-opus-4-8` model on your key).
+4. **`ANTHROPIC_API_KEY` not set:** the server now prints a warning at
+   startup if the key is missing from the environment.

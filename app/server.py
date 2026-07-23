@@ -11,11 +11,13 @@ Setup:
     pip install flask anthropic
     export ANTHROPIC_API_KEY=sk-ant-...
     python app/server.py
-    open http://localhost:5000
+    open http://localhost:5001
 """
 
 import json
 import os
+import sys
+import traceback
 from datetime import date
 from pathlib import Path
 
@@ -118,6 +120,7 @@ def run():
     user = build_user(ACTIONS[action], data)
 
     def generate():
+        print(f"[run] action={action} system_chars={len(system)} user_chars={len(user)}", file=sys.stderr)
         try:
             with client.messages.stream(
                 model=MODEL,
@@ -128,8 +131,10 @@ def run():
                 for text in stream.text_stream:
                     yield f"data: {json.dumps({'text': text})}\n\n"
             yield f"data: {json.dumps({'done': True})}\n\n"
-        except anthropic.APIError as exc:  # surface API errors to the UI
-            yield f"data: {json.dumps({'error': str(exc)})}\n\n"
+            print("[run] done", file=sys.stderr)
+        except Exception as exc:  # noqa: BLE001 - always surface the failure to the UI
+            traceback.print_exc(file=sys.stderr)
+            yield f"data: {json.dumps({'error': f'{type(exc).__name__}: {exc}'})}\n\n"
 
     return Response(
         stream_with_context(generate()),
@@ -163,4 +168,10 @@ def log():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=False, threaded=True)
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        print(
+            "WARNING: ANTHROPIC_API_KEY is not set in this shell — every /api/run "
+            "call will fail. Run: export ANTHROPIC_API_KEY=sk-ant-...",
+            file=sys.stderr,
+        )
+    app.run(host="127.0.0.1", port=5001, debug=False, threaded=True)
