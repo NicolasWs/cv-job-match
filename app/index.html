@@ -122,18 +122,22 @@
 <script>
 let action = "cv-match";
 const $ = id => document.getElementById(id);
-const MODEL_LABELS = { sonnet: "Sonnet 5 (better writing quality)", haiku: "Haiku 4.5 (fastest, cheapest)" };
 
 (async function loadModels() {
   try {
     const r = await fetch("/api/models");
     const j = await r.json();
-    $("model").innerHTML = Object.keys(j.models)
-      .map(k => `<option value="${k}" ${k === j.default ? "selected" : ""}>${MODEL_LABELS[k] || k}</option>`)
+    const keys = Object.keys(j.models);
+    if (!keys.length) {
+      $("model").innerHTML = '<option value="">No provider configured — see .env.example</option>';
+      return;
+    }
+    $("model").innerHTML = keys
+      .map(k => `<option value="${k}" ${k === j.default ? "selected" : ""}>${j.models[k]}</option>`)
       .join("");
   } catch (e) {
-    $("model").innerHTML = '<option value="sonnet">Sonnet 5</option><option value="haiku">Haiku 4.5</option>';
-    console.warn("[cv-job-match] could not load /api/models, using fallback list:", e);
+    $("model").innerHTML = '<option value="sonnet">Claude Sonnet 5</option>';
+    console.warn("[cv-job-match] could not load /api/models:", e);
   }
 })();
 
