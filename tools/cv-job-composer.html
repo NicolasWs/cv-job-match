@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV & Job Prompt Composer</title>
+<style>
+  :root {
+    --bg:#f7f7f8; --card:#fff; --fg:#1a1a1a; --muted:#666; --border:#e2e2e5;
+    --accent:#4f46e5; --accent-fg:#fff; --code:#f0f0f3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#18181b; --card:#232327; --fg:#ececee; --muted:#a1a1aa;
+      --border:#35353a; --accent:#7c6cf0; --accent-fg:#fff; --code:#1c1c20;
+    }
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg); color:var(--fg); line-height:1.5;
+  }
+  .wrap { max-width:820px; margin:0 auto; padding:28px 20px 60px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 24px; font-size:.92rem; }
+  .card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:20px; margin-bottom:18px;
+  }
+  label { display:block; font-weight:600; font-size:.9rem; margin:0 0 6px; }
+  .hint { font-weight:400; color:var(--muted); font-size:.82rem; }
+  textarea, input, select {
+    width:100%; background:var(--bg); color:var(--fg);
+    border:1px solid var(--border); border-radius:8px; padding:10px 12px;
+    font-size:.92rem; font-family:inherit; resize:vertical;
+  }
+  textarea { min-height:120px; }
+  textarea.big { min-height:180px; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:200px; }
+  .field { margin-bottom:16px; }
+  button {
+    background:var(--accent); color:var(--accent-fg); border:none;
+    border-radius:8px; padding:11px 20px; font-size:.95rem; font-weight:600;
+    cursor:pointer;
+  }
+  button.ghost { background:transparent; color:var(--accent);
+    border:1px solid var(--accent); }
+  button:active { transform:translateY(1px); }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  #out {
+    white-space:pre-wrap; background:var(--code); border:1px solid var(--border);
+    border-radius:8px; padding:14px; font-family:ui-monospace,SFMono-Regular,
+    Menlo,monospace; font-size:.85rem; overflow-x:auto; min-height:60px;
+  }
+  .copied { color:var(--muted); font-size:.85rem; }
+  ol { padding-left:20px; margin:8px 0 0; color:var(--muted); font-size:.86rem; }
+  ol li { margin:3px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CV &amp; Job Prompt Composer</h1>
+  <p class="sub">Paste your CV and a job description, pick an action, and copy a
+  ready-made prompt to send to Claude Code. Works offline — nothing is uploaded.</p>
+
+  <div class="card">
+    <div class="field">
+      <label>Your CV
+        <span class="hint">— leave blank if already saved to context/cv-master.md</span>
+      </label>
+      <textarea id="cv" class="big" placeholder="Paste your full CV text here…"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Job description <span class="hint">— required</span></label>
+      <textarea id="jd" class="big" placeholder="Paste the full job posting here…"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label>Company <span class="hint">— optional</span></label>
+        <input id="company" placeholder="e.g. Mistral AI">
+      </div>
+      <div class="field">
+        <label>Action</label>
+        <select id="action">
+          <option value="match">Match CV to job + suggest edits</option>
+          <option value="matchout">Match + draft outreach (cover letter, email, LinkedIn)</option>
+          <option value="interview">Interview prep (Q&amp;A + storytelling + support sheet)</option>
+          <option value="log">Log this job in the tracker</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button onclick="build()">Build prompt</button>
+      <button class="ghost" onclick="copyOut()">Copy</button>
+      <span id="msg" class="copied"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Prompt to paste into Claude Code</label>
+    <div id="out">Your prompt will appear here.</div>
+    <ol>
+      <li>Click <b>Build prompt</b>, then <b>Copy</b>.</li>
+      <li>Open Claude Code in the cv-job-match repo.</li>
+      <li>Paste and send. Chain follow-ups like "draft outreach" or "log this job".</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+function build() {
+  var cv = document.getElementById('cv').value.trim();
+  var jd = document.getElementById('jd').value.trim();
+  var company = document.getElementById('company').value.trim();
+  var action = document.getElementById('action').value;
+  var out = document.getElementById('out');
+
+  if (!jd && action !== 'log') {
+    out.textContent = '⚠ Please paste a job description first.';
+    return;
+  }
+
+  var lead = {
+    match: 'Run cv-match on this job. Give me the match score, edit suggestions, and a tailored CV.',
+    matchout: 'Run cv-match on this job, then draft outreach (cover letter, recruiter email, LinkedIn message).',
+    interview: 'Prep me for an interview for this role: Q&A set, STAR storytelling, and a one-page support sheet.',
+    log: 'Log this job in my Google Sheet tracker.'
+  }[action];
+
+  var p = lead + '\n';
+  if (company) p += '\nCompany: ' + company + '\n';
+  if (cv) {
+    p += '\nMy CV (save it to context/cv-master.md if not already saved):\n';
+    p += '<<<CV\n' + cv + '\nCV>>>\n';
+  }
+  if (jd) {
+    p += '\nJob description:\n<<<JOB\n' + jd + '\nJOB>>>\n';
+  }
+  if (action === 'log') {
+    p += '\nSet status and priority when you add the row (ask me if unsure).\n';
+  }
+  out.textContent = p.trim();
+  document.getElementById('msg').textContent = '';
+}
+
+function copyOut() {
+  var text = document.getElementById('out').textContent;
+  if (!text || text.indexOf('appear here') > -1) return;
+  navigator.clipboard.writeText(text).then(function(){
+    document.getElementById('msg').textContent = 'Copied ✓';
+  }, function(){
+    document.getElementById('msg').textContent = 'Select the text and copy manually.';
+  });
+}
+</script>
+</body>
+</html>
