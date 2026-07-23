@@ -8,8 +8,10 @@ description: Prepare Nicolas for an interview at a specific company/role — gen
 Produce interview material for ONE company/role.
 
 ## Inputs
-- **structured_profile** — reuse `cv-match` output if available, else read
-  `context/cv-master.md`, else ask for the CV.
+- **structured_profile** — reuse `cv-match` output if available, else read the
+  CV matching the interview language (`context/cv-master-fr.md` for French,
+  `context/cv-master.md` for English — the FR file has richer facts/metrics),
+  else ask for the CV.
 - **experience bank** — read `context/experience-bank.md` if present (Opensee,
   Natixis, Palo IT, Trade Value/Woon). If absent, extract stories from the CV.
 - **target company + role** — ask if not given.

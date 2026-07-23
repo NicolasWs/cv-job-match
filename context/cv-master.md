@@ -166,6 +166,19 @@ knowledge in AI/ML with strong product management fundamentals.
 
 ---
 
+## Note on the French version
+
+A French CV also exists at `context/cv-master-fr.md`. It's the richer,
+more recent source technically — precise stack (Angular/.NET/SQL Server,
+Clickhouse/PostgreSQL/Apache NiFi/Dataiku), exact metrics for the Natixis
+and Woon/TradeValue missions, clients Kepler Cheuvreux and Taula Capital,
+and the full list of AI certifications (LangChain/RAG, crewAI, Dataiku,
+KNIME). Prefer it as a fact source when detail is needed, even for English
+output. The current freelance role is titled "Product Delivery Lead" /
+"Product Management, Data & IA" there and starts August 2025 (vs "Product &
+AI Strategy Lead" / July 2025 here) — same mission, use the title/date that
+matches the target language.
+
 ## Narrative principles (apply in all generated assets)
 - Emphasize skills and learning, not duration.
 - Stay positive; each mission is an opportunity.

@@ -9,8 +9,12 @@ Parse Nicolas's CV, score fit against ONE job description, and produce an
 actionable edit list plus a tailored CV.
 
 ## Inputs
-- **CV** — read `context/cv-master.md` if it exists; otherwise ask the user to
-  paste the CV text.
+- **CV** — pick by the job description's language: `context/cv-master-fr.md`
+  for a French posting, `context/cv-master.md` for English. Read both if
+  unsure or if the posting mixes languages — `cv-master-fr.md` has richer
+  technical detail (exact stack, Natixis/Opensee/Woon metrics, full AI
+  certification list) and is the better fact source even when writing in
+  English. If neither file exists, ask the user to paste the CV text.
 - **Job description** — the target posting (paste). If a company is named but
   the posting is thin, ask for a link or more detail before matching.
 - **Narrative rules** — read `context/narrative-rules.md` if present, else apply
@@ -53,8 +57,9 @@ Four labelled lists, each item = change + one-line reason:
 
 ### 5. Tailored CV
 Output a full tailored CV in markdown applying the edits above. Match the
-posting's language (FR/EN). Preserve every factual claim from the source CV;
-you may reorder, re-weight, and rephrase, but not fabricate.
+posting's language (FR/EN) — write natively in that language, don't translate
+literally. Preserve every factual claim from the source CV; you may reorder,
+re-weight, and rephrase, but not fabricate.
 
 ## Output format
 ```

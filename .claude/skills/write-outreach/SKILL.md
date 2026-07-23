@@ -9,7 +9,10 @@ Draft cover letter, recruiter email, and LinkedIn message for ONE posting.
 
 ## Inputs
 - **structured_profile + positioning** — reuse the output of `cv-match` if it
-  ran this session. Otherwise read `context/cv-master.md`, or ask for the CV.
+  ran this session. Otherwise read the CV matching the job description's
+  language (`context/cv-master-fr.md` for French, `context/cv-master.md` for
+  English — the FR file has richer facts/metrics and is a good source even
+  when writing in English), or ask for the CV.
 - **Job description** — the target posting.
 - **Company notes** — anything known about the company/team (optional).
 - **Narrative rules** — `context/narrative-rules.md` if present, else defaults.
