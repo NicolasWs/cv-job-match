@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV &amp; Cover Letter Tool</title>
+<style>
+  :root {
+    --bg:#f6f6f7; --card:#fff; --fg:#1a1a1a; --muted:#666; --border:#e3e3e6;
+    --accent:#4f46e5; --accent-fg:#fff; --code:#f1f1f4; --ok:#0a7d33;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#161618; --card:#212124; --fg:#ececee; --muted:#a1a1aa;
+      --border:#34343a; --accent:#7c6cf0; --accent-fg:#fff; --code:#1b1b1f; --ok:#4ade80; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    background:var(--bg); color:var(--fg); line-height:1.55; }
+  .wrap { max-width:1100px; margin:0 auto; padding:24px 20px 60px; }
+  h1 { font-size:1.4rem; margin:0 0 2px; }
+  .sub { color:var(--muted); font-size:.9rem; margin:0 0 20px; }
+  .grid { display:grid; grid-template-columns:380px 1fr; gap:20px; align-items:start; }
+  @media (max-width:860px){ .grid{ grid-template-columns:1fr; } }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:12px; padding:18px; }
+  label { display:block; font-weight:600; font-size:.85rem; margin:12px 0 5px; }
+  label:first-child { margin-top:0; }
+  .hint { font-weight:400; color:var(--muted); font-size:.8rem; }
+  textarea, input, select {
+    width:100%; background:var(--bg); color:var(--fg); border:1px solid var(--border);
+    border-radius:8px; padding:9px 11px; font-size:.9rem; font-family:inherit; resize:vertical; }
+  textarea { min-height:90px; }
+  textarea.big { min-height:150px; }
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+  .tab { padding:7px 12px; border:1px solid var(--border); border-radius:999px;
+    background:transparent; color:var(--fg); font-size:.85rem; cursor:pointer; }
+  .tab.active { background:var(--accent); color:var(--accent-fg); border-color:var(--accent); }
+  button.run { margin-top:16px; width:100%; background:var(--accent); color:var(--accent-fg);
+    border:none; border-radius:8px; padding:11px; font-size:.95rem; font-weight:600; cursor:pointer; }
+  button.run:disabled { opacity:.55; cursor:default; }
+  button.ghost { background:transparent; color:var(--accent); border:1px solid var(--accent);
+    border-radius:8px; padding:7px 12px; font-size:.82rem; cursor:pointer; }
+  .out { min-height:300px; }
+  #output h2 { font-size:1.05rem; border-bottom:1px solid var(--border); padding-bottom:5px; margin:18px 0 8px; }
+  #output h3 { font-size:.95rem; margin:14px 0 6px; }
+  #output table { border-collapse:collapse; width:100%; margin:8px 0; font-size:.85rem; display:block; overflow-x:auto; }
+  #output th, #output td { border:1px solid var(--border); padding:5px 8px; text-align:left; }
+  #output pre { background:var(--code); padding:12px; border-radius:8px; overflow-x:auto; font-size:.82rem; }
+  #output code { background:var(--code); padding:1px 5px; border-radius:4px; font-size:.85em; }
+  #output ul,#output ol { padding-left:22px; }
+  .status { color:var(--muted); font-size:.85rem; margin:2px 0 10px; min-height:1.2em; }
+  .toprow { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .hidden { display:none; }
+  .logfields { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>CV &amp; Cover Letter Tool</h1>
+  <p class="sub">Local app for Nicolas — runs each action live through Claude. Reads your stored CVs automatically.</p>
+
+  <div class="grid">
+    <!-- LEFT: inputs -->
+    <div class="card">
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-action="cv-match">Match CV</button>
+        <button class="tab" data-action="write-outreach">Draft outreach</button>
+        <button class="tab" data-action="interview-prep">Interview prep</button>
+        <button class="tab" data-action="log">Log job</button>
+      </div>
+
+      <div id="common">
+        <label>Company <span class="hint">optional</span></label>
+        <input id="company" placeholder="e.g. Datadog">
+        <label>Role <span class="hint">optional</span></label>
+        <input id="role" placeholder="e.g. Senior PM, AI &amp; Data Security">
+        <label id="jdLabel">Job description <span class="hint" id="jdHint">required</span></label>
+        <textarea id="jd" class="big" placeholder="Paste the full job posting here…"></textarea>
+      </div>
+
+      <div id="cvBlock">
+        <label>CV override <span class="hint">optional — leave blank to use stored CVs</span></label>
+        <textarea id="cv" placeholder="Paste a CV only if you want to override the stored one…"></textarea>
+      </div>
+
+      <div id="logExtra" class="hidden">
+        <div class="logfields">
+          <div><label>Priority</label>
+            <select id="priority"><option>High</option><option selected>Med</option><option>Low</option></select></div>
+          <div><label>Status</label>
+            <select id="status">
+              <option>To apply</option><option selected>Applied</option><option>Screening</option>
+              <option>Interview 1</option><option>Interview 2</option><option>Final</option>
+              <option>Offer</option><option>Rejected</option><option>Withdrawn</option>
+            </select></div>
+          <div><label>Match</label>
+            <select id="match"><option value="">—</option><option>Strong</option><option>Good</option><option>Partial</option></select></div>
+          <div><label>Next follow-up</label><input id="nextfu" type="date"></div>
+        </div>
+        <label>Source / link</label><input id="link" placeholder="https://…">
+        <label>Notes</label><input id="notes" placeholder="Referral, recruiter name, …">
+      </div>
+
+      <button class="run" id="runBtn">Run</button>
+    </div>
+
+    <!-- RIGHT: output -->
+    <div class="card out">
+      <div class="toprow">
+        <div class="status" id="status">Ready.</div>
+        <button class="ghost" id="copyBtn">Copy output</button>
+      </div>
+      <div id="output"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let action = "cv-match";
+const $ = id => document.getElementById(id);
+
+$("tabs").addEventListener("click", e => {
+  const btn = e.target.closest(".tab"); if (!btn) return;
+  action = btn.dataset.action;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === btn));
+  const isLog = action === "log";
+  const isInterview = action === "interview-prep";
+  $("logExtra").classList.toggle("hidden", !isLog);
+  $("cvBlock").classList.toggle("hidden", isLog);
+  $("jdLabel").classList.toggle("hidden", isLog);
+  $("jd").classList.toggle("hidden", isLog);
+  $("jdHint").textContent = isInterview ? "optional" : "required";
+  $("runBtn").textContent = isLog ? "Build tracker row" : "Run";
+  $("output").innerHTML = ""; $("status").textContent = "Ready.";
+});
+
+$("copyBtn").addEventListener("click", () => {
+  navigator.clipboard.writeText($("output").innerText || "").then(
+    () => { $("status").textContent = "Copied ✓"; },
+    () => { $("status").textContent = "Select and copy manually."; });
+});
+
+$("runBtn").addEventListener("click", () => action === "log" ? runLog() : runStream());
+
+function payload() {
+  return {
+    action,
+    company: $("company").value,
+    role: $("role").value,
+    job_description: $("jd").value,
+    cv_override: $("cv").value,
+  };
+}
+
+async function runLog() {
+  const body = {
+    company: $("company").value, role: $("role").value,
+    priority: $("priority").value, status: $("status").value,
+    match: $("match").value, link: $("link").value,
+    next_follow_up: $("nextfu").value, notes: $("notes").value,
+  };
+  $("status").textContent = "Building row…";
+  const r = await fetch("/api/log", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  const j = await r.json();
+  $("output").innerHTML = renderMd(
+    "### Tracker row (tab-separated)\nCopy this and paste into **row A** of your Google Sheet — the tabs land it across the columns.\n\n```\n"
+    + j.tsv + "\n```\n\nColumns: Company · Role · Priority · Match · Status · Source · Date Found · Date Applied · Contact · Contact link · Last Action · Last Action Date · Next Follow-up · Assets · Notes");
+  $("status").textContent = "Done. Click 'Copy output' then paste into the sheet.";
+}
+
+async function runStream() {
+  if (action !== "interview-prep" && !$("jd").value.trim()) {
+    $("status").textContent = "⚠ Paste a job description first."; return;
+  }
+  $("runBtn").disabled = true;
+  $("output").innerHTML = ""; $("status").textContent = "Claude is working…";
+  let buf = "";
+  try {
+    const resp = await fetch("/api/run", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload())});
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let carry = "";
+    while (true) {
+      const {value, done} = await reader.read();
+      if (done) break;
+      carry += dec.decode(value, {stream:true});
+      const chunks = carry.split("\n\n"); carry = chunks.pop();
+      for (const c of chunks) {
+        const line = c.replace(/^data: /, "");
+        if (!line) continue;
+        let msg; try { msg = JSON.parse(line); } catch { continue; }
+        if (msg.text) { buf += msg.text; $("output").innerHTML = renderMd(buf); $("status").textContent = "Streaming…"; }
+        else if (msg.error) { $("status").textContent = "Error: " + msg.error; }
+        else if (msg.done) { $("status").textContent = "Done."; }
+      }
+    }
+  } catch (e) {
+    $("status").textContent = "Error: " + e.message;
+  } finally {
+    $("runBtn").disabled = false;
+  }
+}
+
+// --- tiny Markdown renderer (headings, bold, code, lists, pipe tables) ---
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function inline(s){
+  return esc(s)
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>")
+    .replace(/\*([^*]+)\*/g,"<em>$1</em>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+}
+function renderMd(md){
+  const lines = md.split("\n"); let html=""; let i=0;
+  while (i < lines.length){
+    let ln = lines[i];
+    if (ln.startsWith("```")){ let code=""; i++;
+      while (i<lines.length && !lines[i].startsWith("```")){ code += lines[i]+"\n"; i++; }
+      html += "<pre>"+esc(code)+"</pre>"; i++; continue; }
+    if (/^#{1,6}\s/.test(ln)){ const l=ln.match(/^#+/)[0].length; html+=`<h${l>3?3:l}>`+inline(ln.replace(/^#+\s/,""))+`</h${l>3?3:l}>`; i++; continue; }
+    if (ln.includes("|") && i+1<lines.length && /^\s*\|?[\s:|-]+\|?\s*$/.test(lines[i+1])){
+      const cells = r => r.replace(/^\||\|$/g,"").split("|").map(c=>c.trim());
+      let t="<table><thead><tr>"+cells(ln).map(c=>"<th>"+inline(c)+"</th>").join("")+"</tr></thead><tbody>";
+      i+=2;
+      while (i<lines.length && lines[i].includes("|")){ t+="<tr>"+cells(lines[i]).map(c=>"<td>"+inline(c)+"</td>").join("")+"</tr>"; i++; }
+      html += t+"</tbody></table>"; continue; }
+    if (/^\s*[-*]\s/.test(ln)){ let u="<ul>";
+      while (i<lines.length && /^\s*[-*]\s/.test(lines[i])){ u+="<li>"+inline(lines[i].replace(/^\s*[-*]\s/,""))+"</li>"; i++; }
+      html += u+"</ul>"; continue; }
+    if (/^\s*\d+\.\s/.test(ln)){ let o="<ol>";
+      while (i<lines.length && /^\s*\d+\.\s/.test(lines[i])){ o+="<li>"+inline(lines[i].replace(/^\s*\d+\.\s/,""))+"</li>"; i++; }
+      html += o+"</ol>"; continue; }
+    if (ln.trim()===""){ i++; continue; }
+    html += "<p>"+inline(ln)+"</p>"; i++;
+  }
+  return html;
+}
+</script>
+</body>
+</html>
