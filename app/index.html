@@ -68,6 +68,11 @@
         <button class="tab" data-action="log">Log job</button>
       </div>
 
+      <div id="modelBlock">
+        <label>Model <span class="hint">Sonnet 5 = better writing quality · Haiku 4.5 = fastest/cheapest</span></label>
+        <select id="model"></select>
+      </div>
+
       <div id="common">
         <label>Company <span class="hint">optional</span></label>
         <input id="company" placeholder="e.g. Datadog">
@@ -117,6 +122,20 @@
 <script>
 let action = "cv-match";
 const $ = id => document.getElementById(id);
+const MODEL_LABELS = { sonnet: "Sonnet 5 (better writing quality)", haiku: "Haiku 4.5 (fastest, cheapest)" };
+
+(async function loadModels() {
+  try {
+    const r = await fetch("/api/models");
+    const j = await r.json();
+    $("model").innerHTML = Object.keys(j.models)
+      .map(k => `<option value="${k}" ${k === j.default ? "selected" : ""}>${MODEL_LABELS[k] || k}</option>`)
+      .join("");
+  } catch (e) {
+    $("model").innerHTML = '<option value="sonnet">Sonnet 5</option><option value="haiku">Haiku 4.5</option>';
+    console.warn("[cv-job-match] could not load /api/models, using fallback list:", e);
+  }
+})();
 
 $("tabs").addEventListener("click", e => {
   const btn = e.target.closest(".tab"); if (!btn) return;
@@ -124,6 +143,7 @@ $("tabs").addEventListener("click", e => {
   document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t === btn));
   const isLog = action === "log";
   const isInterview = action === "interview-prep";
+  $("modelBlock").classList.toggle("hidden", isLog);
   $("logExtra").classList.toggle("hidden", !isLog);
   $("cvBlock").classList.toggle("hidden", isLog);
   $("jdLabel").classList.toggle("hidden", isLog);
@@ -144,6 +164,7 @@ $("runBtn").addEventListener("click", () => action === "log" ? runLog() : runStr
 function payload() {
   return {
     action,
+    model: $("model").value,
     company: $("company").value,
     role: $("role").value,
     job_description: $("jd").value,

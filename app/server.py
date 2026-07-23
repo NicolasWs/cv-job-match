@@ -27,7 +27,16 @@ from flask import Flask, Response, request, send_from_directory, stream_with_con
 ROOT = Path(__file__).resolve().parent.parent
 CONTEXT = ROOT / "context"
 SKILLS = ROOT / ".claude" / "skills"
-MODEL = "claude-opus-4-8"
+
+# Models selectable from the UI dropdown. Sonnet 5 is the default: CV tailoring
+# and cover letters are writing-quality-sensitive, and Sonnet is far cheaper
+# and faster than Opus while still very capable. Haiku is offered for quick,
+# low-stakes drafts.
+MODELS = {
+    "sonnet": "claude-sonnet-5",
+    "haiku": "claude-haiku-4-5",
+}
+DEFAULT_MODEL_KEY = "sonnet"
 
 app = Flask(__name__)
 client = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
@@ -107,6 +116,11 @@ def index():
     return send_from_directory(Path(__file__).resolve().parent, "index.html")
 
 
+@app.route("/api/models")
+def models():
+    return {"models": MODELS, "default": DEFAULT_MODEL_KEY}
+
+
 @app.route("/api/run", methods=["POST"])
 def run():
     data = request.get_json(force=True)
@@ -116,14 +130,19 @@ def run():
     if action != "interview-prep" and not (data.get("job_description") or "").strip():
         return {"error": "a job description is required for this action"}, 400
 
+    model_key = data.get("model") or DEFAULT_MODEL_KEY
+    if model_key not in MODELS:
+        return {"error": f"unknown model: {model_key}"}, 400
+    model = MODELS[model_key]
+
     system = build_system(ACTIONS[action])
     user = build_user(ACTIONS[action], data)
 
     def generate():
-        print(f"[run] action={action} system_chars={len(system)} user_chars={len(user)}", file=sys.stderr)
+        print(f"[run] action={action} model={model} system_chars={len(system)} user_chars={len(user)}", file=sys.stderr)
         try:
             with client.messages.stream(
-                model=MODEL,
+                model=model,
                 max_tokens=20000,
                 system=system,
                 messages=[{"role": "user", "content": user}],

@@ -17,6 +17,11 @@ The first three read your stored CVs (`context/cv-master.md` and
 `context/cv-master-fr.md`) automatically and pick the right one by the posting's
 language. Paste a CV in "CV override" only to try a different one.
 
+**Model picker:** each of the three LLM-backed tabs has a dropdown —
+**Sonnet 5** (default; better writing quality for CV tailoring and cover
+letters) or **Haiku 4.5** (fastest and cheapest, for quick low-stakes drafts).
+The list is served from `/api/models` so it stays in sync with `server.py`.
+
 ## Run it
 
 ```bash
