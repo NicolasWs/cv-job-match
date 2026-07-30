@@ -1,0 +1,204 @@
+# ============================================================================
+# Job Search Profile — the single control panel for the whole pipeline
+# ============================================================================
+# Edit this file directly, or just ask Claude in plain English:
+#   "add Mistral to my target companies"
+#   "drop the freelance roles this week"
+#   "only jobs posted in the last 2 weeks"
+#
+# Everything downstream (n8n weekly scrape, filtering, scoring, packages)
+# reads from this file. Nothing else needs to change.
+# ============================================================================
+
+profile:
+  name: Nicolas Wajs
+  email: nicolas.wajs@gmail.com
+  phone: "+33 6 8089 4962"
+  linkedin: https://www.linkedin.com/in/nicolaswajs2025/
+  github: https://github.com/NicolasWs
+
+# ----------------------------------------------------------------------------
+# CV SOURCE — switch language here. Everything (packages, cover letters) follows.
+# ----------------------------------------------------------------------------
+cv:
+  # "en" -> context/cv-master.md  |  "fr" -> context/cv-master-fr.md
+  # "auto" -> match the language of each individual job posting
+  language: auto
+  paths:
+    en: context/cv-master.md
+    fr: context/cv-master-fr.md
+  # cv-master-fr.md is the richer fact source (exact stack, metrics, full AI
+  # certification list). Used to enrich English output even when writing in EN.
+  fact_source: context/cv-master-fr.md
+
+# ----------------------------------------------------------------------------
+# SEARCH — what to scrape from LinkedIn each week
+# ----------------------------------------------------------------------------
+search:
+  titles:
+    - AI Product Manager
+    - Head of Product
+    - Product Manager Fintech
+    - Lead Product Manager
+    - Director of Product
+  location: Paris, France
+  # LinkedIn codes: "1" on-site, "2" remote, "3" hybrid
+  work_modes: ["1", "3"]
+  # Max results per title per run
+  limit_per_title: 40
+  # r86400 = 24h, r604800 = 7 days, r2592000 = 30 days
+  # Weekly runs should use r604800 to only pick up genuinely new postings.
+  date_posted: r604800
+
+# ----------------------------------------------------------------------------
+# FILTERS — applied after scraping, before scoring
+# ----------------------------------------------------------------------------
+filters:
+  # Hard age cutoff, independent of the LinkedIn date_posted window above.
+  # Anything older than this many days is dropped.
+  max_age_days: 60
+
+  # Companies matching ANY of these patterns are removed (case-insensitive,
+  # matched against company name AND job title).
+  # This is the consulting / ESN / SSII / body-shop exclusion.
+  exclude_company_patterns:
+    - consulting
+    - conseil
+    - ESN
+    - SSII
+    - "société de services"
+    - staffing
+    - recruitment
+    - recrutement
+    - "cabinet de recrutement"
+    - interim
+    - intérim
+    - freelance platform
+    # Named ESN/consultancies frequently appearing in Paris PM searches
+    - Wivoo
+    - Wavestone
+    - Hubvisory
+    - SFEIR
+    - NEXTON
+    - Niji
+    - Theodo
+    - eXalt
+    - Galadrim
+    - Umantic
+    - Soors
+    - Sopra
+    - Capgemini
+    - Accenture
+    - Devoteam
+    - Onepoint
+    - Talan
+    - Octo
+    - Ippon
+    - Zenika
+    - Artefact
+
+  # Titles matching these are dropped (junior roles, non-PM roles)
+  exclude_title_patterns:
+    - intern
+    - stage
+    - alternance
+    - apprenti
+    - junior
+    - graduate
+    - "product owner junior"
+
+  # Set true to allow freelance / contract / mission roles back in.
+  # When false, postings flagged freelance/contract/CDD are dropped.
+  include_freelance: false
+
+  # When true, jobs at companies in target_sectors.large_financial get a
+  # scoring boost and are surfaced first; others are kept but ranked lower.
+  # Set prefer_only: true to DROP everything outside the target list.
+  prefer_only: false
+
+# ----------------------------------------------------------------------------
+# TARGETING — who you actually want to work for
+# ----------------------------------------------------------------------------
+target_sectors:
+  # Large financial institutions — the primary target per Nicolas's background
+  large_financial:
+    - LSEG
+    - Euronext
+    - Euroclear
+    - BNP Paribas
+    - Société Générale
+    - Crédit Agricole
+    - Natixis
+    - BPCE
+    - AXA
+    - Amundi
+    - HSBC
+    - JP Morgan
+    - Goldman Sachs
+    - Morgan Stanley
+    - BlackRock
+    - Bloomberg
+    - Refinitiv
+    - S&P Global
+    - Moody's
+    - MSCI
+    - Clearstream
+    - Western Union
+    - Worldline
+    - Edenred
+    - CACEIS
+    - BNY Mellon
+    - State Street
+    - Allianz
+    - Generali
+    - CNP Assurances
+
+  # Fintech / scale-ups with real financial-product depth
+  fintech:
+    - Qonto
+    - Alan
+    - Shine
+    - Nickel
+    - Trustpair
+    - Swan
+    - Lydia
+    - Younited
+    - Pennylane
+    - Spendesk
+    - Payfit
+    - Ledger
+    - Kolecto
+
+  # AI-first companies where the AI product experience is the lead card
+  ai_platforms:
+    - Mistral
+    - Dataiku
+    - Hugging Face
+    - Photoroom
+    - Datadog
+    - Contentsquare
+    - Doctolib
+
+# ----------------------------------------------------------------------------
+# SCORING — how Claude ranks each job (0-10)
+# ----------------------------------------------------------------------------
+scoring:
+  weights:
+    domain_match: 3        # financial services / AI product overlap
+    seniority_match: 2     # Lead/Staff/Head/Director/VP vs 15+ yrs experience
+    ai_relevance: 2        # explicit AI/ML/agentic product ownership
+    target_sector_bonus: 2 # company appears in target_sectors above
+    recruiter_available: 1 # a named recruiter gives a direct outreach path
+  # Jobs below this score are kept in the sheet but flagged "low priority"
+  min_priority_score: 6
+
+# ----------------------------------------------------------------------------
+# OUTPUT
+# ----------------------------------------------------------------------------
+output:
+  drive_folder: JobApplications
+  drive_folder_id: 1kHLEHtByGC33M-75rw-4zV7XwTgJCx-E
+  # Per-job subfolder naming: {date}_{company}_{role-slug}
+  subfolder_format: "{date}_{company}_{role}"
+  # Keep the rolling history so weekly runs can dedupe against past results
+  seen_jobs_file: data/seen-jobs.json

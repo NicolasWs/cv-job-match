@@ -1,0 +1,261 @@
+{
+  "name": "Weekly LinkedIn Job Scrape — Nicolas",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 7,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "trigger-weekly",
+      "name": "Every Monday 07:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"titles\": [\n    \"AI Product Manager\",\n    \"Head of Product\",\n    \"Product Manager Fintech\",\n    \"Lead Product Manager\",\n    \"Director of Product\"\n  ],\n  \"location\": \"Paris, France\",\n  \"work_modes\": [\n    \"1\",\n    \"3\"\n  ],\n  \"limit_per_title\": 40,\n  \"date_posted\": \"r604800\",\n  \"max_age_days\": 60,\n  \"include_freelance\": false,\n  \"prefer_only\": false,\n  \"exclude_company_patterns\": [\n    \"consulting\",\n    \"conseil\",\n    \"ESN\",\n    \"SSII\",\n    \"société de services\",\n    \"staffing\",\n    \"recruitment\",\n    \"recrutement\",\n    \"cabinet de recrutement\",\n    \"interim\",\n    \"intérim\",\n    \"freelance platform\",\n    \"Wivoo\",\n    \"Wavestone\",\n    \"Hubvisory\",\n    \"SFEIR\",\n    \"NEXTON\",\n    \"Niji\",\n    \"Theodo\",\n    \"eXalt\",\n    \"Galadrim\",\n    \"Umantic\",\n    \"Soors\",\n    \"Sopra\",\n    \"Capgemini\",\n    \"Accenture\",\n    \"Devoteam\",\n    \"Onepoint\",\n    \"Talan\",\n    \"Octo\",\n    \"Ippon\",\n    \"Zenika\",\n    \"Artefact\"\n  ],\n  \"exclude_title_patterns\": [\n    \"intern\",\n    \"stage\",\n    \"alternance\",\n    \"apprenti\",\n    \"junior\",\n    \"graduate\",\n    \"product owner junior\"\n  ],\n  \"target_sectors\": {\n    \"large_financial\": [\n      \"LSEG\",\n      \"Euronext\",\n      \"Euroclear\",\n      \"BNP Paribas\",\n      \"Société Générale\",\n      \"Crédit Agricole\",\n      \"Natixis\",\n      \"BPCE\",\n      \"AXA\",\n      \"Amundi\",\n      \"HSBC\",\n      \"JP Morgan\",\n      \"Goldman Sachs\",\n      \"Morgan Stanley\",\n      \"BlackRock\",\n      \"Bloomberg\",\n      \"Refinitiv\",\n      \"S&P Global\",\n      \"Moody's\",\n      \"MSCI\",\n      \"Clearstream\",\n      \"Western Union\",\n      \"Worldline\",\n      \"Edenred\",\n      \"CACEIS\",\n      \"BNY Mellon\",\n      \"State Street\",\n      \"Allianz\",\n      \"Generali\",\n      \"CNP Assurances\"\n    ],\n    \"fintech\": [\n      \"Qonto\",\n      \"Alan\",\n      \"Shine\",\n      \"Nickel\",\n      \"Trustpair\",\n      \"Swan\",\n      \"Lydia\",\n      \"Younited\",\n      \"Pennylane\",\n      \"Spendesk\",\n      \"Payfit\",\n      \"Ledger\",\n      \"Kolecto\"\n    ],\n    \"ai_platforms\": [\n      \"Mistral\",\n      \"Dataiku\",\n      \"Hugging Face\",\n      \"Photoroom\",\n      \"Datadog\",\n      \"Contentsquare\",\n      \"Doctolib\"\n    ]\n  }\n}",
+        "options": {}
+      },
+      "id": "config",
+      "name": "Search Config",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        20,
+        300
+      ],
+      "notes": "SOURCE OF TRUTH is config/search-profile.yaml in the repo.\nRegenerate this blob with:  python3 pipeline/config_to_n8n.py"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "titles",
+        "options": {}
+      },
+      "id": "split-titles",
+      "name": "One Item Per Title",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/valig~linkedin-jobs-scraper/run-sync-get-dataset-items",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({\n  title: $json.titles,\n  location: $('Search Config').first().json.location,\n  remote: $('Search Config').first().json.work_modes,\n  limit: $('Search Config').first().json.limit_per_title,\n  datePosted: $('Search Config').first().json.date_posted\n}) }}",
+        "options": {
+          "timeout": 180000,
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "apify-scrape",
+      "name": "Apify — LinkedIn Jobs Scraper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "apify-header-auth",
+          "name": "Apify Bearer Token"
+        }
+      },
+      "notes": "Credential = Header Auth:\n  Name:  Authorization\n  Value: Bearer <your Apify API token>\nGet the token at console.apify.com → Settings → API & Integrations."
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===========================================================================\n// Filter engine — mirrors pipeline/filter_jobs.py\n// Keep the two in sync; the YAML config is the source of truth.\n// ===========================================================================\nconst cfg = $('Search Config').first().json;\nconst jobs = $input.all().map(i => i.json).filter(j => j && j.id);\n\nconst AGE_UNITS = {\n  minute: 1/1440, minutes: 1/1440, hour: 1/24, hours: 1/24,\n  day: 1, days: 1, week: 7, weeks: 7,\n  month: 30, months: 30, year: 365, years: 365,\n};\n\nfunction ageInDays(job) {\n  if (job.postedDate) {\n    const d = new Date(job.postedDate);\n    if (!isNaN(d)) return Math.floor((Date.now() - d.getTime()) / 86400000);\n  }\n  const m = /(\\d+)\\s+(\\w+)\\s+ago/i.exec(job.postedTimeAgo || '');\n  if (m && AGE_UNITS[m[2].toLowerCase()]) {\n    return Math.floor(parseInt(m[1], 10) * AGE_UNITS[m[2].toLowerCase()]);\n  }\n  return null;  // unknown age -> keep, don't silently drop\n}\n\nconst esc = s => s.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&');\nconst mk  = arr => arr.map(p => new RegExp('\\\\b' + esc(p) + '\\\\b', 'i'));\n\nconst exclCompany  = mk(cfg.exclude_company_patterns || []);\nconst exclTitle    = mk(cfg.exclude_title_patterns || []);\nconst freelanceRx  = mk(['freelance','contract','contractor','CDD','interim','intérim','mission','temporary']);\n\nfunction sectorOf(job) {\n  const c = (job.companyName || '').toLowerCase();\n  for (const [bucket, names] of Object.entries(cfg.target_sectors || {})) {\n    if (names.some(n => c.includes(n.toLowerCase()))) return bucket;\n  }\n  return '';\n}\n\nconst stats = { input: jobs.length, duplicate: 0, excluded_company: 0,\n                excluded_title: 0, too_old: 0, freelance_dropped: 0,\n                outside_target: 0, kept: 0 };\nconst dropped = [];\nconst seen = new Set();\nconst kept = [];\n\nfor (const job of jobs) {\n  const id = String(job.id);\n  if (seen.has(id)) { stats.duplicate++; continue; }\n\n  const title    = job.title || '';\n  const company  = job.companyName || '';\n  const haystack = company + ' ' + title;\n\n  if (exclCompany.some(r => r.test(haystack))) {\n    stats.excluded_company++; dropped.push(`[consulting] ${company} — ${title}`); continue;\n  }\n  if (exclTitle.some(r => r.test(title))) {\n    stats.excluded_title++; dropped.push(`[title] ${company} — ${title}`); continue;\n  }\n\n  const age = ageInDays(job);\n  if (age !== null && age > cfg.max_age_days) { stats.too_old++; continue; }\n\n  const isFreelance = freelanceRx.some(r => r.test(title + ' ' + (job.contractType || '')));\n  if (!cfg.include_freelance && isFreelance) {\n    stats.freelance_dropped++; dropped.push(`[freelance] ${company} — ${title}`); continue;\n  }\n\n  const bucket = sectorOf(job);\n  if (cfg.prefer_only && !bucket) { stats.outside_target++; continue; }\n\n  seen.add(id);\n  kept.push({\n    id, title, company,\n    location:      job.location || '',\n    url:           job.url || '',\n    salary:        job.salary || 'Not disclosed',\n    contract_type: job.contractType || '',\n    experience:    job.experienceLevel || '',\n    posted:        job.postedTimeAgo || '',\n    age_days:      age === null ? '' : age,\n    recruiter:      job.recruiterName || '',\n    recruiter_url:  job.recruiterUrl || '',\n    target_sector:  bucket,\n    has_recruiter:  Boolean(job.recruiterName),\n    description:    (job.description || '').slice(0, 4000),\n  });\n}\n\nstats.kept = kept.length;\n// Target-sector hits first, then freshest.\nkept.sort((a, b) => {\n  if ((a.target_sector === '') !== (b.target_sector === '')) return a.target_sector === '' ? 1 : -1;\n  return (a.age_days === '' ? 999 : a.age_days) - (b.age_days === '' ? 999 : b.age_days);\n});\n\nconst runDate = new Date().toISOString().slice(0, 10);\nreturn [{\n  json: {\n    run_date: runDate,\n    filename: `jobs-${runDate}.json`,\n    stats,\n    dropped_sample: dropped.slice(0, 25),\n    target_sector_hits: kept.filter(j => j.target_sector).length,\n    jobs: kept,\n  }\n}];"
+      },
+      "id": "filter",
+      "name": "Filter & Dedupe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "toJson",
+        "mode": "each",
+        "binaryPropertyName": "data",
+        "options": {
+          "fileName": "={{ $json.filename }}",
+          "format": true
+        }
+      },
+      "id": "to-file",
+      "name": "Convert to JSON File",
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Filter & Dedupe').first().json.filename }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "1kHLEHtByGC33M-75rw-4zV7XwTgJCx-E"
+        },
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "drive-upload",
+      "name": "Upload to Drive — JobApplications",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1120,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "google-drive-oauth",
+          "name": "Google Drive account"
+        }
+      },
+      "notes": "folderId is the JobApplications folder created for this pipeline.\nIf you recreate the folder, update the ID here and in config/search-profile.yaml."
+    },
+    {
+      "parameters": {
+        "jsCode": "const r = $('Filter & Dedupe').first().json;\nconst s = r.stats;\nconst lines = [\n  `Weekly job scrape — ${r.run_date}`,\n  ``,\n  `  scraped              ${s.input}`,\n  `  duplicates          -${s.duplicate}`,\n  `  consulting/ESN      -${s.excluded_company}`,\n  `  excluded title      -${s.excluded_title}`,\n  `  too old             -${s.too_old}`,\n  `  freelance dropped   -${s.freelance_dropped}`,\n  `  outside target      -${s.outside_target}`,\n  `  ---------------------------`,\n  `  KEPT                 ${s.kept}   (${r.target_sector_hits} at target companies)`,\n  ``,\n  `Saved to Drive: ${r.filename}`,\n  ``,\n  `Next: ask Claude \"score this week's jobs\" to rank them,`,\n  `then \"build a package for <company>\" for any you want to pursue.`,\n];\nreturn [{ json: { summary: lines.join('\\n'), ...s } }];"
+      },
+      "id": "summary",
+      "name": "Run Summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1340,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Every Monday 07:00": {
+      "main": [
+        [
+          {
+            "node": "Search Config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Config": {
+      "main": [
+        [
+          {
+            "node": "One Item Per Title",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "One Item Per Title": {
+      "main": [
+        [
+          {
+            "node": "Apify — LinkedIn Jobs Scraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apify — LinkedIn Jobs Scraper": {
+      "main": [
+        [
+          {
+            "node": "Filter & Dedupe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter & Dedupe": {
+      "main": [
+        [
+          {
+            "node": "Convert to JSON File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to JSON File": {
+      "main": [
+        [
+          {
+            "node": "Upload to Drive — JobApplications",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Drive — JobApplications": {
+      "main": [
+        [
+          {
+            "node": "Run Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "cv-job-match-pipeline"
+  },
+  "tags": [
+    {
+      "name": "job-search"
+    }
+  ]
+}
