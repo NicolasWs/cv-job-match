@@ -9,5 +9,10 @@ __pycache__/
 .venv/
 venv/
 
+# Google credentials & caches (webapp)
+credentials/
+webapp/.cache/
+context/*.md.bak
+
 # OS cruft
 .DS_Store

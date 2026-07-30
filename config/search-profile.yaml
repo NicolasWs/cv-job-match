@@ -1,0 +1,131 @@
+# search-profile.yaml — single source of truth for the job-search pipeline.
+# Read/written by the webapp (Filters panel) and consumed by pipeline/filter_jobs.py.
+# After editing, run: python3 pipeline/config_to_n8n.py --write   (keeps n8n in sync)
+
+cv:
+  master_en: context/cv-master.md
+  master_fr: context/cv-master-fr.md
+  # Which CV feeds packages: en | fr | auto (auto = detect from posting language)
+  language: auto
+
+search:
+  titles:
+  - Product Manager AI
+  - Product Manager Data
+  - Senior Product Manager
+  - Product Owner Data
+  - AI Product Manager
+  - Product Lead
+  location: Paris, Île-de-France, France
+  work_modes:        # LinkedIn work types to include
+  - hybrid
+  - remote
+  - onsite
+
+filters:
+  max_age_days: 14           # drop postings older than this
+  include_freelance: true    # keep freelance/contract missions
+  prefer_only_target_sectors: false   # if true, keep only target-sector companies
+  # Companies to always exclude (case-insensitive substring/regex match).
+  # Mostly staffing agencies and ESNs that repost the same roles.
+  exclude_company_patterns:
+  - hays
+  - michael page
+  - page personnel
+  - robert half
+  - robert walters
+  - randstad
+  - adecco
+  - manpower
+  - expectra
+  - modis
+  - akkodis
+  - alten
+  - altran
+  - capgemini
+  - sopra steria
+  - atos
+  - cgi
+  - accenture
+  - devoteam
+  - talan
+  - wavestone
+  - mc2i
+  - extia
+  - amaris
+  - davidson
+  - free-?lance\.com
+  - freelance republik
+  - malt
+  - comet
+  - lehibou
+  - club freelance
+  - mindquest
+  - huxley
+  - nigel frank
+  exclude_title_patterns:
+  - intern(ship)?
+  - stage|stagiaire
+  - alternan(ce|t)
+  - apprenti
+  - junior
+  - graduate
+  - working student
+
+# Companies tagged by sector in the jobs table; used by prefer_only_target_sectors
+# and shown as a tag column. Matching is case-insensitive substring.
+target_sectors:
+  large_financial:
+  - BNP Paribas
+  - Société Générale
+  - Crédit Agricole
+  - Natixis
+  - BPCE
+  - Amundi
+  - AXA
+  - Euronext
+  - Murex
+  - Finastra
+  - SS&C
+  - Bloomberg
+  - LSEG
+  fintech:
+  - Qonto
+  - Swan
+  - Pennylane
+  - Spendesk
+  - Alan
+  - Ledger
+  - Lydia
+  - Memo Bank
+  - Defacto
+  - Pigment
+  - Agicap
+  - October
+  ai_platforms:
+  - Mistral AI
+  - Hugging Face
+  - Dataiku
+  - LightOn
+  - Owkin
+  - Photoroom
+  - Dust
+  - Gladia
+  - Giskard
+  - Scaleway
+
+scoring:
+  # Weights the LLM uses when computing the 0-10 fit score. Must sum to 1.0.
+  weights:
+    role_fit: 0.35          # title/seniority/scope vs Nicolas's PM profile
+    domain_fit: 0.25        # finance / data / AI domain overlap
+    skills_match: 0.20      # hard-skills overlap with the CV
+    location_logistics: 0.10  # Paris / remote compatibility
+    company_appeal: 0.10    # target-sector bonus, company stage/reputation
+
+output:
+  # Google Drive folder "JobApplications" — holds jobs-YYYY-MM-DD.json scrape
+  # dumps, the Job_Matches spreadsheet, and one subfolder per built package.
+  drive_folder_id: REPLACE_WITH_DRIVE_FOLDER_ID
+  spreadsheet_name: Job_Matches_Paris_ProductAI.xlsx
+  applications_dir: applications

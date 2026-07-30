@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cv-job-match control panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --line:#e2e5ea; --txt:#1c2430; --mut:#68727f;
+          --acc:#2563eb; --ok:#16a34a; --warn:#d97706; --bad:#dc2626; }
+  * { box-sizing:border-box; }
+  body { margin:0; font:14px/1.45 system-ui,-apple-system,sans-serif; background:var(--bg); color:var(--txt); }
+  header { padding:18px 24px 6px; }
+  header h1 { margin:0; font-size:20px; }
+  header p { margin:4px 0 0; color:var(--mut); }
+  main { max-width:1100px; margin:0 auto; padding:12px 24px 60px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px;
+            margin:16px 0; padding:16px 20px; }
+  section h2 { margin:0 0 4px; font-size:16px; }
+  section .sub { color:var(--mut); margin:0 0 12px; font-size:13px; }
+  label.f { display:block; margin:10px 0 4px; font-weight:600; font-size:13px; }
+  input[type=text], input[type=number], input[type=password], select {
+    padding:6px 9px; border:1px solid var(--line); border-radius:6px; font:inherit; background:#fff; }
+  input[type=text] { width:100%; max-width:480px; }
+  button { padding:7px 14px; border:1px solid var(--acc); background:var(--acc); color:#fff;
+           border-radius:6px; font:inherit; cursor:pointer; }
+  button.sec { background:#fff; color:var(--acc); }
+  button:disabled { opacity:.5; cursor:default; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; padding:6px; border:1px solid var(--line);
+           border-radius:6px; background:#fbfcfd; min-height:38px; max-width:720px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; background:#e8eefc; color:#1e3a8a;
+          padding:2px 8px; border-radius:12px; font-size:12.5px; }
+  .chip b { cursor:pointer; font-weight:700; }
+  .chips input { border:none; outline:none; background:transparent; flex:1; min-width:120px; font:inherit; }
+  .row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-end; }
+  .out { white-space:pre-wrap; font:12px/1.4 ui-monospace,monospace; background:#0f172a; color:#d7e2f0;
+         padding:10px 12px; border-radius:6px; margin-top:10px; max-height:220px; overflow:auto; }
+  .msg { margin-top:10px; font-size:13px; } .msg.ok{color:var(--ok);} .msg.err{color:var(--bad); white-space:pre-wrap;}
+  table { border-collapse:collapse; width:100%; margin-top:12px; font-size:13px; }
+  th, td { border-bottom:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { cursor:pointer; user-select:none; white-space:nowrap; background:#fbfcfd; position:sticky; top:0; }
+  .score { font-weight:700; border-radius:5px; padding:1px 7px; color:#fff; display:inline-block; }
+  .s-g{background:var(--ok);} .s-a{background:var(--warn);} .s-r{background:var(--bad);}
+  .tag { background:#eef2f7; border-radius:4px; padding:1px 6px; font-size:11.5px; color:var(--mut); }
+  .diff { font:12px/1.4 ui-monospace,monospace; background:#0f172a; color:#cbd5e1; padding:10px 12px;
+          border-radius:6px; max-height:400px; overflow:auto; white-space:pre; margin-top:10px; }
+  .diff .add{color:#4ade80;} .diff .del{color:#f87171;} .diff .hunk{color:#60a5fa;}
+  .prog li { margin:3px 0; } .st-queued{color:var(--mut);} .st-generating{color:var(--warn);}
+  .st-saved{color:var(--ok);} .st-error{color:var(--bad);}
+  .tblwrap { max-height:520px; overflow:auto; }
+  details.settings summary { cursor:pointer; font-weight:600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>cv-job-match control panel</h1>
+  <p>Tweak filters → refresh this week's jobs → score → select → build packages.</p>
+</header>
+<main>
+
+<!-- ══ 1 · FILTERS ══ -->
+<section id="p-filters">
+  <h2>1 · Filters</h2>
+  <p class="sub">Edits <code>config/search-profile.yaml</code> directly; saving re-syncs the n8n weekly scrape.</p>
+  <label class="f">Search titles</label><div class="chips" id="c-titles"></div>
+  <div class="row">
+    <div><label class="f">Location</label><input type="text" id="f-location" style="min-width:320px"></div>
+    <div><label class="f">Work modes</label>
+      <span id="f-modes">
+        <label><input type="checkbox" value="hybrid"> hybrid</label>
+        <label><input type="checkbox" value="remote"> remote</label>
+        <label><input type="checkbox" value="onsite"> onsite</label>
+      </span></div>
+    <div><label class="f">Max age (days)</label><input type="number" id="f-maxage" min="1" style="width:90px"></div>
+    <div><label class="f">&nbsp;</label><label><input type="checkbox" id="f-freelance"> include freelance</label></div>
+    <div><label class="f">&nbsp;</label><label><input type="checkbox" id="f-preferonly"> only target sectors</label></div>
+  </div>
+  <label class="f">Exclude company patterns</label><div class="chips" id="c-exco"></div>
+  <label class="f">Exclude title patterns</label><div class="chips" id="c-exti"></div>
+  <label class="f">Target sectors — large financial</label><div class="chips" id="c-fin"></div>
+  <label class="f">Target sectors — fintech</label><div class="chips" id="c-fintech"></div>
+  <label class="f">Target sectors — AI platforms</label><div class="chips" id="c-ai"></div>
+  <p><button id="b-savecfg">Save filters → sync n8n</button></p>
+  <div id="cfg-msg"></div><div id="n8n-out" class="out" style="display:none"></div>
+</section>
+
+<!-- ══ 2 · CV ══ -->
+<section id="p-cv">
+  <h2>2 · CV</h2>
+  <p class="sub">Replace <code>context/cv-master.md</code> / <code>cv-master-fr.md</code> from a PDF. Nothing is written until you approve the diff.</p>
+  <div class="row">
+    <div><label class="f">Package CV language</label>
+      <select id="cv-lang"><option value="auto">auto (detect from posting)</option>
+        <option value="en">en</option><option value="fr">fr</option></select>
+      <button class="sec" id="b-savelang">Save</button></div>
+    <div><label class="f">Replace which CV</label>
+      <select id="cv-which"><option value="en">English (cv-master.md)</option>
+        <option value="fr">French (cv-master-fr.md)</option></select></div>
+    <div><label class="f">PDF file</label><input type="file" id="cv-file" accept="application/pdf"></div>
+    <div><label class="f">&nbsp;</label><button id="b-cvup">Extract &amp; preview diff</button></div>
+  </div>
+  <div id="cv-msg"></div>
+  <div id="cv-preview" style="display:none">
+    <div class="diff" id="cv-diff"></div>
+    <p><button id="b-cvcommit">Write this CV</button>
+       <button class="sec" id="b-cvdiscard">Discard</button></p>
+  </div>
+</section>
+
+<!-- ══ 3 · THIS WEEK'S JOBS ══ -->
+<section id="p-jobs">
+  <h2>3 · This week's jobs</h2>
+  <p class="sub">Scrape files from the Drive <em>JobApplications</em> folder, filtered through the pipeline.</p>
+  <div class="row">
+    <div><label class="f">Scrape file</label><select id="j-file" style="min-width:260px"></select>
+      <button class="sec" id="b-jrefresh">Refresh list</button>
+      <button id="b-jload">Load</button></div>
+    <div><label class="f">Filter rows</label><input type="text" id="j-search" placeholder="type to filter…" style="min-width:200px"></div>
+    <div><label class="f">&nbsp;</label><button id="b-score">Score visible jobs</button></div>
+    <div><label class="f">&nbsp;</label><button class="sec" id="b-xlsx">Update Drive spreadsheet</button></div>
+  </div>
+  <div id="j-msg"></div>
+  <div id="j-stats" class="sub" style="margin-top:8px"></div>
+  <div class="tblwrap"><table id="j-table" style="display:none">
+    <thead><tr>
+      <th data-k="_sel"><input type="checkbox" id="j-selall" title="select all"></th>
+      <th data-k="title">Title</th><th data-k="company">Company</th><th data-k="location">Location</th>
+      <th data-k="salary">Salary</th><th data-k="contract_type">Contract</th>
+      <th data-k="age_days">Age</th><th data-k="recruiter">Recruiter</th>
+      <th data-k="sector">Sector</th><th data-k="score">Score</th><th data-k="reason">Why</th>
+    </tr></thead><tbody></tbody>
+  </table></div>
+</section>
+
+<!-- ══ 4 · BUILD PACKAGES ══ -->
+<section id="p-pkg">
+  <h2>4 · Build packages</h2>
+  <p class="sub">Generates a tailored CV excerpt + cover letter + LinkedIn message per selected job
+     (saved to <code>applications/…</code> and mirrored to Drive). Builds only — this tool never applies or sends anything for you.</p>
+  <p><button id="b-build">Build packages for selected jobs</button> <span id="pkg-count" class="tag"></span></p>
+  <div id="pkg-msg"></div>
+  <ul class="prog" id="pkg-prog"></ul>
+</section>
+
+<!-- ══ SETTINGS ══ -->
+<section>
+  <details class="settings"><summary>Settings — LLM provider, models &amp; API keys</summary>
+    <div class="row" style="margin-top:12px">
+      <div><label class="f">Provider</label><select id="s-provider">
+        <option value="mistral">Mistral</option><option value="openai">OpenAI</option>
+        <option value="google">Google (Gemini)</option></select></div>
+      <div><label class="f">Scoring model (cheap, bulk)</label><input type="text" id="s-scoring" style="min-width:220px"></div>
+      <div><label class="f">Package model (strong)</label><input type="text" id="s-package" style="min-width:220px"></div>
+    </div>
+    <div class="row">
+      <div><label class="f">MISTRAL_API_KEY <span class="tag" id="k-mistral"></span></label>
+        <input type="password" id="s-mistral" placeholder="leave blank to keep current"></div>
+      <div><label class="f">OPENAI_API_KEY <span class="tag" id="k-openai"></span></label>
+        <input type="password" id="s-openai" placeholder="leave blank to keep current"></div>
+      <div><label class="f">GEMINI_API_KEY <span class="tag" id="k-google"></span></label>
+        <input type="password" id="s-google" placeholder="leave blank to keep current"></div>
+    </div>
+    <p><button id="b-savesettings">Save settings</button></p>
+    <div id="s-msg"></div>
+    <p class="sub">Keys are written to the git-ignored <code>.env</code>. Only the selected provider's key is required.</p>
+  </details>
+</section>
+
+</main>
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const api = async (path, opts) => {
+  const r = await fetch(path, opts);
+  let data; try { data = await r.json(); } catch { data = { error: `HTTP ${r.status}` }; }
+  if (!r.ok || data.error) throw new Error(data.error || `HTTP ${r.status}`);
+  return data;
+};
+const msg = (id, text, cls) => { const el = $(id); el.className = "msg " + cls; el.textContent = text; };
+
+// ---- chip editors ----
+function chipEditor(id, values) {
+  const box = $(id); box.innerHTML = "";
+  const items = [...(values || [])];
+  const input = document.createElement("input");
+  input.placeholder = "add + Enter";
+  const render = () => {
+    box.querySelectorAll(".chip").forEach((c) => c.remove());
+    items.forEach((v, i) => {
+      const chip = document.createElement("span");
+      chip.className = "chip"; chip.textContent = v;
+      const x = document.createElement("b"); x.textContent = "×";
+      x.onclick = () => { items.splice(i, 1); render(); };
+      chip.appendChild(x); box.insertBefore(chip, input);
+    });
+  };
+  input.onkeydown = (e) => {
+    if (e.key === "Enter" && input.value.trim()) { items.push(input.value.trim()); input.value = ""; render(); }
+    if (e.key === "Backspace" && !input.value && items.length) { items.pop(); render(); }
+  };
+  box.appendChild(input); render();
+  return { get: () => [...items], set: (v) => { items.length = 0; items.push(...v); render(); } };
+}
+const chips = {
+  titles: chipEditor("c-titles"), exco: chipEditor("c-exco"), exti: chipEditor("c-exti"),
+  fin: chipEditor("c-fin"), fintech: chipEditor("c-fintech"), ai: chipEditor("c-ai"),
+};
+
+// ---- panel 1: filters ----
+async function loadConfig() {
+  const cfg = await api("/api/config");
+  chips.titles.set(cfg.search.titles); chips.exco.set(cfg.filters.exclude_company_patterns);
+  chips.exti.set(cfg.filters.exclude_title_patterns);
+  chips.fin.set(cfg.target_sectors.large_financial); chips.fintech.set(cfg.target_sectors.fintech);
+  chips.ai.set(cfg.target_sectors.ai_platforms);
+  $("f-location").value = cfg.search.location || "";
+  $("f-maxage").value = cfg.filters.max_age_days;
+  $("f-freelance").checked = !!cfg.filters.include_freelance;
+  $("f-preferonly").checked = !!cfg.filters.prefer_only_target_sectors;
+  document.querySelectorAll("#f-modes input").forEach((cb) =>
+    cb.checked = (cfg.search.work_modes || []).includes(cb.value));
+  $("cv-lang").value = cfg.cv.language || "auto";
+}
+$("b-savecfg").onclick = async () => {
+  try {
+    const payload = {
+      titles: chips.titles.get(), location: $("f-location").value,
+      work_modes: [...document.querySelectorAll("#f-modes input:checked")].map((c) => c.value),
+      max_age_days: +$("f-maxage").value || 14,
+      include_freelance: $("f-freelance").checked,
+      prefer_only_target_sectors: $("f-preferonly").checked,
+      exclude_company_patterns: chips.exco.get(), exclude_title_patterns: chips.exti.get(),
+      target_sectors: { large_financial: chips.fin.get(), fintech: chips.fintech.get(), ai_platforms: chips.ai.get() },
+    };
+    const r = await api("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    msg("cfg-msg", r.n8n_sync.ok ? "Saved ✓ — n8n workflow synced." : "Saved, but n8n sync failed:", r.n8n_sync.ok ? "ok" : "err");
+    const out = $("n8n-out"); out.style.display = "block"; out.textContent = r.n8n_sync.output || "(no output)";
+  } catch (e) { msg("cfg-msg", e.message, "err"); }
+};
+
+// ---- panel 2: CV ----
+let cvToken = null;
+$("b-savelang").onclick = async () => {
+  try {
+    await api("/api/config", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ cv_language: $("cv-lang").value }) });
+    msg("cv-msg", "Language saved ✓", "ok");
+  } catch (e) { msg("cv-msg", e.message, "err"); }
+};
+$("b-cvup").onclick = async () => {
+  const f = $("cv-file").files[0];
+  if (!f) return msg("cv-msg", "Pick a PDF first.", "err");
+  msg("cv-msg", "Extracting + converting (LLM call, ~30s)…", "ok");
+  const fd = new FormData(); fd.append("file", f); fd.append("which", $("cv-which").value);
+  try {
+    const r = await api("/api/cv/upload", { method: "POST", body: fd });
+    cvToken = r.token;
+    $("cv-diff").innerHTML = r.diff.split("\n").map((l) => {
+      const esc = l.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+      if (l.startsWith("+")) return `<span class="add">${esc}</span>`;
+      if (l.startsWith("-")) return `<span class="del">${esc}</span>`;
+      if (l.startsWith("@@")) return `<span class="hunk">${esc}</span>`;
+      return esc;
+    }).join("\n") || "(no differences)";
+    $("cv-preview").style.display = "block";
+    msg("cv-msg", `Preview ready for ${r.file} — review the diff, then Write or Discard.`, "ok");
+  } catch (e) { msg("cv-msg", e.message, "err"); }
+};
+$("b-cvcommit").onclick = async () => {
+  try {
+    const r = await api("/api/cv/commit", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: cvToken }) });
+    $("cv-preview").style.display = "none"; msg("cv-msg", r.message + " ✓", "ok");
+  } catch (e) { msg("cv-msg", e.message, "err"); }
+};
+$("b-cvdiscard").onclick = async () => {
+  await api("/api/cv/discard", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token: cvToken }) });
+  $("cv-preview").style.display = "none"; msg("cv-msg", "Discarded — nothing written.", "ok");
+};
+
+// ---- panel 3: jobs ----
+let jobs = [], scores = {}, sortKey = "age_days", sortAsc = true, selected = new Set();
+const scoreCls = (s) => (s >= 8 ? "s-g" : s >= 6 ? "s-a" : "s-r");
+function renderTable() {
+  const q = $("j-search").value.toLowerCase();
+  const rows = jobs
+    .filter((j) => !q || `${j.title} ${j.company} ${j.location} ${j.sector || ""}`.toLowerCase().includes(q))
+    .sort((a, b) => {
+      let va = sortKey === "score" ? (scores[a.id]?.score ?? -1) : a[sortKey] ?? "";
+      let vb = sortKey === "score" ? (scores[b.id]?.score ?? -1) : b[sortKey] ?? "";
+      if (sortKey === "reason") { va = scores[a.id]?.reason ?? ""; vb = scores[b.id]?.reason ?? ""; }
+      return (va < vb ? -1 : va > vb ? 1 : 0) * (sortAsc ? 1 : -1);
+    });
+  const tb = document.querySelector("#j-table tbody"); tb.innerHTML = "";
+  for (const j of rows) {
+    const s = scores[j.id];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td><input type="checkbox" data-id="${j.id}" ${selected.has(j.id) ? "checked" : ""}></td>
+      <td><a href="${j.url || "#"}" target="_blank" rel="noopener">${j.title}</a></td>
+      <td>${j.company}</td><td>${j.location}</td><td>${j.salary || ""}</td>
+      <td>${j.contract_type || ""}</td><td>${j.age_days ?? ""}</td><td>${j.recruiter || ""}</td>
+      <td>${j.sector ? `<span class="tag">${j.sector}</span>` : ""}</td>
+      <td>${s?.score != null ? `<span class="score ${scoreCls(s.score)}">${s.score}</span>` : s?.error ? "⚠" : ""}</td>
+      <td>${s?.reason || s?.error || ""}</td>`;
+    tr.querySelector("input").onchange = (e) => {
+      e.target.checked ? selected.add(j.id) : selected.delete(j.id); updatePkgCount();
+    };
+    tb.appendChild(tr);
+  }
+  $("j-table").style.display = jobs.length ? "table" : "none";
+  updatePkgCount();
+}
+document.querySelectorAll("#j-table th").forEach((th) => th.onclick = () => {
+  const k = th.dataset.k; if (k === "_sel") return;
+  sortAsc = sortKey === k ? !sortAsc : true; sortKey = k; renderTable();
+});
+$("j-search").oninput = renderTable;
+$("j-selall").onchange = (e) => {
+  document.querySelectorAll("#j-table tbody input").forEach((cb) => {
+    cb.checked = e.target.checked;
+    e.target.checked ? selected.add(cb.dataset.id) : selected.delete(cb.dataset.id);
+  }); updatePkgCount();
+};
+$("b-jrefresh").onclick = async () => {
+  try {
+    const r = await api("/api/drive/files");
+    $("j-file").innerHTML = r.files.map((f) => `<option value="${f.id}">${f.name}</option>`).join("");
+    msg("j-msg", r.files.length ? `${r.files.length} scrape file(s) found.` : "No jobs-YYYY-MM-DD.json files in the Drive folder.", "ok");
+  } catch (e) { msg("j-msg", e.message, "err"); }
+};
+$("b-jload").onclick = async () => {
+  const sel = $("j-file");
+  if (!sel.value) return msg("j-msg", "Refresh the list and pick a scrape file first.", "err");
+  msg("j-msg", "Downloading + filtering…", "ok");
+  try {
+    const r = await api("/api/jobs/load", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ file_id: sel.value, name: sel.options[sel.selectedIndex].text }) });
+    jobs = r.jobs; scores = r.scores || {}; selected.clear();
+    const st = r.stats;
+    $("j-stats").textContent = `Kept ${st.kept} of ${st.input} — dropped: ${st.duplicates} duplicates, `
+      + `${st.excluded_company} excluded companies, ${st.excluded_title} excluded titles, `
+      + `${st.too_old} too old, ${st.freelance_dropped} freelance, ${st.non_target_sector} non-target-sector.`;
+    msg("j-msg", `Loaded ${jobs.length} jobs (${Object.keys(scores).length} scores from cache).`, "ok");
+    renderTable();
+  } catch (e) { msg("j-msg", e.message, "err"); }
+};
+$("b-score").onclick = async () => {
+  if (!jobs.length) return msg("j-msg", "Load jobs first.", "err");
+  const q = $("j-search").value.toLowerCase();
+  const visible = jobs.filter((j) => !q || `${j.title} ${j.company} ${j.location} ${j.sector || ""}`.toLowerCase().includes(q));
+  msg("j-msg", `Scoring ${visible.length} job(s) — cached ones are free…`, "ok");
+  $("b-score").disabled = true;
+  try {
+    const r = await api("/api/jobs/score", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: visible.map((j) => j.id) }) });
+    Object.assign(scores, r.scores);
+    const errs = Object.values(r.scores).filter((s) => s.error).length;
+    msg("j-msg", errs ? `Done with ${errs} error(s) — see the Why column.` : "Scoring done ✓", errs ? "err" : "ok");
+    renderTable();
+  } catch (e) { msg("j-msg", e.message, "err"); }
+  finally { $("b-score").disabled = false; }
+};
+$("b-xlsx").onclick = async () => {
+  msg("j-msg", "Building + uploading spreadsheet…", "ok");
+  try {
+    const r = await api("/api/xlsx", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    msg("j-msg", `Spreadsheet updated ✓ — ${r.added} new rows, ${r.score_filled} scores filled, ${r.kept_stale} older rows kept.`, "ok");
+  } catch (e) { msg("j-msg", e.message, "err"); }
+};
+
+// ---- panel 4: packages ----
+const updatePkgCount = () => $("pkg-count").textContent = `${selected.size} selected`;
+$("b-build").onclick = async () => {
+  if (!selected.size) return msg("pkg-msg", "Select jobs in the table above first.", "err");
+  if (selected.size > 8 && !confirm(
+    `You selected ${selected.size} jobs. Each package is a separate LLM call (cost + several minutes). Continue?`)) return;
+  try {
+    await api("/api/packages/start", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: [...selected] }) });
+    msg("pkg-msg", "Build started…", "ok"); pollPackages();
+  } catch (e) { msg("pkg-msg", e.message, "err"); }
+};
+async function pollPackages() {
+  const r = await api("/api/packages/status");
+  const icon = { queued: "◻", generating: "⏳", saved: "✅", error: "❌" };
+  $("pkg-prog").innerHTML = r.jobs.map((j) =>
+    `<li class="st-${j.status}">${icon[j.status]} ${j.company} — ${j.title}` +
+    (j.detail ? ` <span class="tag">${j.detail}</span>` : "") + "</li>").join("");
+  if (r.running) setTimeout(pollPackages, 1500);
+  else if (r.jobs.length) msg("pkg-msg", "Build finished.", "ok");
+}
+
+// ---- settings ----
+async function loadSettings() {
+  const s = await api("/api/settings");
+  $("s-provider").value = s.provider;
+  $("s-scoring").value = s.scoring_model; $("s-package").value = s.package_model;
+  for (const [p, id] of [["mistral", "k-mistral"], ["openai", "k-openai"], ["google", "k-google"]])
+    $(id).textContent = s.keys_set[p] ? "set ✓" : "not set";
+  $("s-provider").onchange = () => {
+    $("s-scoring").value = s.defaults[$("s-provider").value].scoring;
+    $("s-package").value = s.defaults[$("s-provider").value].package;
+  };
+}
+$("b-savesettings").onclick = async () => {
+  try {
+    await api("/api/settings", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        provider: $("s-provider").value, scoring_model: $("s-scoring").value, package_model: $("s-package").value,
+        MISTRAL_API_KEY: $("s-mistral").value, OPENAI_API_KEY: $("s-openai").value, GEMINI_API_KEY: $("s-google").value,
+      }) });
+    ["s-mistral", "s-openai", "s-google"].forEach((id) => $(id).value = "");
+    await loadSettings(); msg("s-msg", "Settings saved to .env ✓", "ok");
+  } catch (e) { msg("s-msg", e.message, "err"); }
+};
+
+loadConfig().catch((e) => msg("cfg-msg", e.message, "err"));
+loadSettings().catch((e) => msg("s-msg", e.message, "err"));
+pollPackages().catch(() => {});
+</script>
+</body>
+</html>

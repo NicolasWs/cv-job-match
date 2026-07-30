@@ -1,0 +1,17 @@
+# cv-job-match control panel — pip install -r requirements.txt
+flask>=3.0
+python-dotenv>=1.0
+ruamel.yaml>=0.18
+PyYAML>=6.0          # read-only loads in pipeline/ scripts
+pdfplumber>=0.11
+openpyxl>=3.1
+
+# LLM providers (only the one you select needs a key, but all three install)
+mistralai>=1.2
+openai>=1.60
+google-genai>=1.0
+
+# Google Drive
+google-api-python-client>=2.150
+google-auth>=2.35
+google-auth-oauthlib>=1.2
