@@ -67,6 +67,23 @@ Also set `output.drive_folder_id` in `config/search-profile.yaml` to the
 JobApplications folder ID (last segment of its Drive URL) — the same one the
 n8n workflow uploads to.
 
+## One-click: "Run my week"
+
+The panel at the very top chains the whole weekly session for you:
+get jobs → filter → score everything → update the Drive spreadsheet → show
+the ranked top picks. It then **pauses** — you review the picks, tick the ones
+you want, and build packages yourself. It never applies to a job or sends a
+message on your behalf.
+
+Two job sources:
+- **Newest Drive scrape file** — the latest `jobs-YYYY-MM-DD.json` from the
+  weekly n8n run (needs Drive configured, see below).
+- **Fresh Apify scrape** — triggers the same `valig/linkedin-jobs-scraper`
+  actor on demand. Needs `APIFY_TOKEN` (Settings panel → stored in `.env`;
+  token from Apify console → Settings → API & integrations). Uses your Apify
+  credits (~$1 / 4000 results). The result is saved to `data/` and mirrored to
+  Drive when configured, so it behaves exactly like a weekly file.
+
 ## Day-to-day use (top to bottom)
 
 1. **Filters** — tweak titles, exclusions, sectors; *Save* writes the YAML

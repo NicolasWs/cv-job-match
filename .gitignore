@@ -12,6 +12,7 @@ venv/
 # Google credentials & caches (webapp)
 credentials/
 webapp/.cache/
+data/
 context/*.md.bak
 
 # OS cruft

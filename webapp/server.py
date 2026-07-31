@@ -29,6 +29,7 @@ import config_io
 import cvimport
 import gdrive
 import packages
+import runweek
 import scoring
 import xlsx_sync
 from filter_jobs import filter_jobs  # pipeline engine, imported not reimplemented
@@ -41,7 +42,7 @@ _current: dict = {"jobs": [], "stats": None, "source": None}
 
 ENV_PATH = ROOT / ".env"
 ENV_KEYS = ("LLM_PROVIDER", "SCORING_MODEL", "PACKAGE_MODEL",
-            "MISTRAL_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY")
+            "MISTRAL_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "APIFY_TOKEN")
 
 
 def _err(exc: Exception, code: int = 500):
@@ -52,6 +53,29 @@ def _err(exc: Exception, code: int = 500):
 @app.route("/")
 def index():
     return send_from_directory(app.static_folder, "index.html")
+
+
+# --- One-click "Run my week" -------------------------------------------------
+
+@app.route("/api/runweek/start", methods=["POST"])
+def runweek_start():
+    data = request.get_json(force=True) or {}
+    source = data.get("source", "drive")
+    if source not in ("drive", "apify"):
+        return jsonify({"error": f"unknown source: {source}"}), 400
+    cfg = config_io.plain(config_io.load())
+
+    def on_jobs_ready(jobs, stats, scores):
+        _current.update(jobs=jobs, stats=stats, source=f"runweek:{source}")
+
+    if not runweek.start(source, cfg, on_jobs_ready):
+        return jsonify({"error": "a run is already in progress"}), 409
+    return jsonify({"started": True})
+
+
+@app.route("/api/runweek/status")
+def runweek_status():
+    return jsonify(runweek.status())
 
 
 # --- Panel 1: Filters --------------------------------------------------------
@@ -109,6 +133,7 @@ def get_settings():
         "package_model": model_for("package"),
         "defaults": DEFAULT_MODELS,
         "keys_set": {p: provider_configured(p) for p in PROVIDERS},
+        "apify_set": bool(os.environ.get("APIFY_TOKEN")),
         "key_env": {**KEY_ENV, "google": "GEMINI_API_KEY"},
     })
 
@@ -123,7 +148,7 @@ def save_settings():
     for form_key, env_key in (("scoring_model", "SCORING_MODEL"), ("package_model", "PACKAGE_MODEL")):
         if form_key in data:
             updates[env_key] = str(data[form_key]).strip()
-    for env_key in ("MISTRAL_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY"):
+    for env_key in ("MISTRAL_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "APIFY_TOKEN"):
         if data.get(env_key):  # only overwrite a key the user actually typed
             updates[env_key] = str(data[env_key]).strip()
     _update_env_file(updates)
@@ -197,6 +222,17 @@ def jobs_load():
         "jobs": [{k: v for k, v in j.items() if k != "description"} for j in jobs],
         "stats": stats,
         "scores": scoring.cached_scores(jobs),
+    })
+
+
+@app.route("/api/jobs/current")
+def jobs_current():
+    """The in-memory table (used by the UI after a one-click run finishes)."""
+    return jsonify({
+        "jobs": [{k: v for k, v in j.items() if k != "description"} for j in _current["jobs"]],
+        "stats": _current["stats"],
+        "scores": scoring.cached_scores(_current["jobs"]),
+        "source": _current["source"],
     })
 
 

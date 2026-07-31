@@ -63,20 +63,26 @@ def _parse_score(text: str) -> dict:
     return {"score": round(score, 1), "reason": str(data.get("reason", "")).strip()}
 
 
-def score_jobs(jobs: list[dict], cv_text: str, weights: dict) -> dict:
-    """Score each job (cache-aware). Returns {job_id: {score, reason} | {error}}."""
+def score_jobs(jobs: list[dict], cv_text: str, weights: dict, on_progress=None) -> dict:
+    """Score each job (cache-aware). Returns {job_id: {score, reason} | {error}}.
+
+    on_progress(done, total, cached_count) is called after each job, so long
+    scoring passes can report live progress.
+    """
     model = model_for("scoring")
     system = SYSTEM_PROMPT.format(weights=json.dumps(weights, indent=2), cv=cv_text)
     cache = _load_cache()
     results: dict[str, dict] = {}
     dirty = False
+    say = on_progress or (lambda *_a: None)
 
-    for job in jobs:
+    for i, job in enumerate(jobs):
         jid = job["id"]
         fp = _fingerprint(job, cv_text, weights, model)
         cached = cache.get(jid)
         if cached and cached.get("fp") == fp:
             results[jid] = {"score": cached["score"], "reason": cached["reason"], "cached": True}
+            say(i + 1, len(jobs), sum(1 for r in results.values() if r.get("cached")))
             continue
         user = (
             f"Job posting:\nTitle: {job.get('title')}\nCompany: {job.get('company')}\n"
@@ -91,6 +97,9 @@ def score_jobs(jobs: list[dict], cv_text: str, weights: dict) -> dict:
             dirty = True
         except (LLMError, ValueError, KeyError, json.JSONDecodeError) as exc:
             results[jid] = {"error": str(exc)}
+        if dirty and (i + 1) % 10 == 0:
+            _save_cache(cache)  # long passes shouldn't lose paid scores on a crash
+        say(i + 1, len(jobs), sum(1 for r in results.values() if r.get("cached")))
 
     if dirty:
         _save_cache(cache)

@@ -57,6 +57,28 @@
 </header>
 <main>
 
+<!-- ══ 0 · RUN MY WEEK ══ -->
+<section id="p-run" style="border-color:var(--acc)">
+  <h2>▶ Run my week</h2>
+  <p class="sub">One click: get jobs → filter → score everything → update spreadsheet → rank.
+     Then <em>you</em> pick which packages to build below (nothing is ever applied or sent for you).</p>
+  <div class="row">
+    <div><label class="f">Job source</label>
+      <select id="rw-source">
+        <option value="drive">Newest Drive scrape file</option>
+        <option value="apify">Fresh Apify scrape (uses your Apify credits)</option>
+      </select></div>
+    <div><label class="f">&nbsp;</label><button id="b-run" style="font-size:15px; padding:9px 22px">Run my week</button></div>
+  </div>
+  <div id="rw-msg"></div>
+  <ul class="prog" id="rw-steps" style="margin:10px 0 0; padding-left:4px; list-style:none"></ul>
+  <div id="rw-top" style="display:none">
+    <label class="f">Top picks</label>
+    <ol id="rw-toplist" style="margin:4px 0 8px"></ol>
+    <button class="sec" id="b-rw-select">Tick these in the table below → build packages</button>
+  </div>
+</section>
+
 <!-- ══ 1 · FILTERS ══ -->
 <section id="p-filters">
   <h2>1 · Filters</h2>
@@ -158,6 +180,8 @@
         <input type="password" id="s-openai" placeholder="leave blank to keep current"></div>
       <div><label class="f">GEMINI_API_KEY <span class="tag" id="k-google"></span></label>
         <input type="password" id="s-google" placeholder="leave blank to keep current"></div>
+      <div><label class="f">APIFY_TOKEN <span class="tag" id="k-apify"></span></label>
+        <input type="password" id="s-apify" placeholder="for on-demand scrapes"></div>
     </div>
     <p><button id="b-savesettings">Save settings</button></p>
     <div id="s-msg"></div>
@@ -203,6 +227,50 @@ function chipEditor(id, values) {
 const chips = {
   titles: chipEditor("c-titles"), exco: chipEditor("c-exco"), exti: chipEditor("c-exti"),
   fin: chipEditor("c-fin"), fintech: chipEditor("c-fintech"), ai: chipEditor("c-ai"),
+};
+
+// ---- run my week ----
+const STEP_LABEL = { fetch: "Get jobs", filter: "Filter & dedupe", score: "Score against CV",
+                     spreadsheet: "Update Drive spreadsheet", rank: "Rank top picks" };
+const STEP_ICON = { pending: "◻", running: "⏳", done: "✅", warn: "⚠️", error: "❌" };
+let rwTop = [];
+$("b-run").onclick = async () => {
+  try {
+    await api("/api/runweek/start", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: $("rw-source").value }) });
+    $("rw-top").style.display = "none"; msg("rw-msg", "Running…", "ok");
+    pollRunweek();
+  } catch (e) { msg("rw-msg", e.message, "err"); }
+};
+async function pollRunweek() {
+  // raw fetch: the status body legitimately carries an "error" field, which
+  // the api() helper would otherwise treat as a failed request
+  const s = await (await fetch("/api/runweek/status")).json();
+  $("rw-steps").innerHTML = Object.keys(STEP_LABEL)
+    .filter((k) => (s.steps || {})[k]).map((k) => [k, s.steps[k]]).map(([k, v]) =>
+    `<li class="st-${v.status === 'done' ? 'saved' : v.status === 'running' ? 'generating' : v.status === 'error' ? 'error' : 'queued'}">` +
+    `${STEP_ICON[v.status] || "◻"} <b>${STEP_LABEL[k] || k}</b>` +
+    (v.detail ? ` — <span class="tag">${v.detail}</span>` : "") + "</li>").join("");
+  if (s.running) { setTimeout(pollRunweek, 1500); return; }
+  if (s.error) { msg("rw-msg", s.error, "err"); return; }
+  if (s.result) {
+    msg("rw-msg", `Done — ${s.result.total} jobs scored. Review the top picks, then build packages.`, "ok");
+    rwTop = s.result.top;
+    $("rw-toplist").innerHTML = rwTop.map((t) =>
+      `<li><span class="score ${scoreCls(t.score)}">${t.score}</span> <b>${t.company}</b> — ${t.title}` +
+      `<br><span class="tag">${t.reason}</span></li>`).join("");
+    $("rw-top").style.display = "block";
+    // refresh the table in panel 3 with the run's results
+    const cur = await api("/api/jobs/current");
+    jobs = cur.jobs; scores = cur.scores || {}; selected.clear();
+    sortKey = "score"; sortAsc = false; renderTable();
+    if (cur.stats) $("j-stats").textContent = `Loaded by "Run my week" — kept ${cur.stats.kept} of ${cur.stats.input}.`;
+  }
+}
+$("b-rw-select").onclick = () => {
+  selected.clear(); rwTop.forEach((t) => selected.add(t.id));
+  renderTable();
+  document.getElementById("p-pkg").scrollIntoView({ behavior: "smooth" });
 };
 
 // ---- panel 1: filters ----
@@ -395,6 +463,7 @@ async function loadSettings() {
   $("s-scoring").value = s.scoring_model; $("s-package").value = s.package_model;
   for (const [p, id] of [["mistral", "k-mistral"], ["openai", "k-openai"], ["google", "k-google"]])
     $(id).textContent = s.keys_set[p] ? "set ✓" : "not set";
+  $("k-apify").textContent = s.apify_set ? "set ✓" : "not set";
   $("s-provider").onchange = () => {
     $("s-scoring").value = s.defaults[$("s-provider").value].scoring;
     $("s-package").value = s.defaults[$("s-provider").value].package;
@@ -406,8 +475,9 @@ $("b-savesettings").onclick = async () => {
       body: JSON.stringify({
         provider: $("s-provider").value, scoring_model: $("s-scoring").value, package_model: $("s-package").value,
         MISTRAL_API_KEY: $("s-mistral").value, OPENAI_API_KEY: $("s-openai").value, GEMINI_API_KEY: $("s-google").value,
+        APIFY_TOKEN: $("s-apify").value,
       }) });
-    ["s-mistral", "s-openai", "s-google"].forEach((id) => $(id).value = "");
+    ["s-mistral", "s-openai", "s-google", "s-apify"].forEach((id) => $(id).value = "");
     await loadSettings(); msg("s-msg", "Settings saved to .env ✓", "ok");
   } catch (e) { msg("s-msg", e.message, "err"); }
 };
@@ -415,6 +485,7 @@ $("b-savesettings").onclick = async () => {
 loadConfig().catch((e) => msg("cfg-msg", e.message, "err"));
 loadSettings().catch((e) => msg("s-msg", e.message, "err"));
 pollPackages().catch(() => {});
+pollRunweek().catch(() => {});
 </script>
 </body>
 </html>
