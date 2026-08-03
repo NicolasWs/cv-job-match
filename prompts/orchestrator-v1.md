@@ -36,10 +36,15 @@ Using structured_profile + JOB_POSTING, output:
 - recommended_positioning: 3-4 bullets on how to pitch Nicolas for this role.
 
 STEP 3 — WRITING (cover letter)
+Before drafting, gather 1-3 concrete, current signals about the company (a
+web search if available, else only what JOB_POSTING/COMPANY_NOTES contain) —
+recent news, a launch, or a challenge named in the company's own words.
+Never invent one.
 Draft a tailored cover letter (max ~300 words) using recommended_positioning
 and the narrative principles. Structure: hook → why me (impact evidence) →
-why this company/role → close with a call to action. French or English —
-match the language of JOB_POSTING.
+why this company/why now, sourced from the research above, not a restatement
+of qualifications → close with a call to action. French or English — match
+the language of JOB_POSTING.
 
 OUTPUT FORMAT:
 ## 1. Structured Profile (JSON)

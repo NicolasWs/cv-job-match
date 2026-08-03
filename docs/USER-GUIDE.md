@@ -79,7 +79,11 @@ Each skill lives in `.claude/skills/<name>/SKILL.md`.
 #### `write-outreach`
 - **Role:** Draft a cover letter, recruiter email, and LinkedIn message for
   one posting, reusing narrative principles (skills over duration, freelance
-  as deliberate choice, impact-first, stay positive).
+  as deliberate choice, impact-first, stay positive). Before drafting, it
+  researches the company (web search when available, else the job posting
+  itself) for a concrete, current detail — a launch, a challenge, a leader's
+  own words — to ground a required "why this company / why now" beat in the
+  cover letter, so the letter argues motivation and not just fit.
 - **Inputs:** `structured_profile` from `cv-match` if it ran this session
   (else reads the CV directly), job description, optional company notes.
 - **Outputs:** cover letter (~250–300 words), recruiter email (subject +
@@ -87,7 +91,8 @@ Each skill lives in `.claude/skills/<name>/SKILL.md`.
 - **Triggers:** "draft outreach", "cover letter", "write to them", "email
   the recruiter".
 - **Guardrail:** every quantified claim must trace to the CV — no invented
-  metrics.
+  metrics. The "why this company / why now" beat must trace to the posting,
+  company notes, or a real search result — never invented news or quotes.
 
 #### `interview-prep`
 - **Role:** Build interview material for one company/role: Q&A,

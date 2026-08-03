@@ -48,6 +48,17 @@ and a two-line justification naming **the biggest strength and the biggest gap**
 Never inflate a score to be encouraging — a 5 that is honest is more useful than
 an 8 that isn't.
 
+## Step 3.5 — Research the company (feeds the cover letter's "why this
+## company / why now" beat)
+
+For each selected job, gather 1–3 concrete, current signals about the
+company: recent news, a product launch, a challenge or priority named by a
+founder/exec on their own site, blog, or in an interview. If a web search
+tool is available, use it and prefer the company's own words over
+third-party speculation. If none is available, use only what's in the job
+posting itself. Never invent news, launches, or quotes — if nothing specific
+turns up, say so and fall back to the most concrete detail in the posting.
+
 ## Step 4 — Generate the package
 
 For each selected job, produce a `package.md` with these sections:
@@ -71,7 +82,11 @@ Fit score: {n}/10 — {one-line reason}
 {reordered, re-weighted CV — never fabricated}
 
 ## Cover Letter
-{addressed to the named recruiter if known, else the hiring team}
+{addressed to the named recruiter if known, else the hiring team. Must
+include one sentence — in the opening or as a standalone line before the
+close — that argues *why this company, why now*, grounded in the company
+research from Step 3.5. This is motivation, not fit: don't just restate
+qualifications.}
 
 ## LinkedIn Outreach Message
 {≤ 90 words, specific to this posting}
@@ -99,6 +114,10 @@ Fit score: {n}/10 — {one-line reason}
   freelance since Jul 2025 is a deliberate strategic choice and not a gap.
 - **Keep cover letters under 250 words.** Three paragraphs: why this role, the
   evidence, the close.
+- **The "why this company / why now" beat is required, and must be sourced.**
+  Trace it to the job posting, company notes, or a web search result from
+  Step 3.5 — never invent news, launches, or quotes the company hasn't
+  actually stated.
 - **Flag excluded-but-interesting.** If a requested company matches
   `exclude_company_patterns` (a consultancy/ESN), build the package anyway if
   explicitly asked, but say plainly that it's normally filtered out and why.
