@@ -2,11 +2,11 @@
 
 **AI Product Manager — Financial Deliverables & Agentic Workflows | Financial Markets Domain Expert**
 
-Product Manager who has directly owned discovery-to-delivery for AI-native and SaaS products in financial services since 2022 (Opensee, then independent) — most recently shipping a broker-voting web application end-to-end on a full AI Software Development Lifecycle (Angular/.NET/SQL Server stack), from design to production go-live in under two months. That product ownership sits on top of a decade of prior, deep domain immersion inside investment banks, asset managers, and hedge funds (Sophis, FusionRisk platforms) — direct, hands-on fluency in how finance teams build and rely on PowerPoint decks, Excel models, and client-facing deliverables, including building Opensee's first PowerBI/PowerPoint reporting workflow with live Excel/Python/Tableau data connectors for HSBC AM. Combines AI/ML product instincts with rigorous quality-assurance discipline and strong product-discovery habits — talking to users, encoding real workflows into product, deciding from evidence.
+Product Manager with ~4 years owning discovery-to-delivery for AI-native and SaaS products in financial services (Opensee, then independent) — most recently shipping a broker-voting web application end-to-end on a full AI Software Development Lifecycle (Angular/.NET/SQL Server stack), from design to production go-live in under two months. That direct product ownership sits on top of a prior decade inside investment banks, asset managers, and hedge funds (Sophis, FusionRisk platforms) — including leading functional QA that coordinated 80+ FTEs validating analytics and financial-model libraries pre-release, the direct precursor of the golden-dataset/regression-testing discipline an agent eval loop needs. Direct, hands-on fluency in how finance teams build and rely on PowerPoint decks, Excel models, and client-facing deliverables — including building Opensee's first PowerBI/PowerPoint reporting workflow with live Excel/Python/Tableau connectors for HSBC AM. Fluent English (C1+) · operates independently through ambiguous, undefined scopes by design since going freelance.
 
 **Contact:** Nicolas.Wajs@gmail.com · +33 6 8089 4962 ·
 [linkedin.com/in/nicolaswajs2025](https://www.linkedin.com/in/nicolaswajs2025/) ·
-[github.com/NicolasWs](https://github.com/NicolasWs)
+[github.com/NicolasWs](https://github.com/NicolasWs) · Fluent English (C1+)
 
 ---
 
@@ -57,12 +57,8 @@ Product Manager who has directly owned discovery-to-delivery for AI-native and S
 ## Skills
 - **Product Management:** AI Agent & Workflow Scoping, Strategy & Roadmapping, Customer Discovery, Prioritization, Go-to-Market, Technical PM, Competitive Analysis
 - **Technical:** AI/ML Integration & Agentic Workflows, PowerPoint/Excel/Word deliverable domain expertise, Data Engineering, Financial Modeling, APIs, Cloud (GCP/AWS), Python, SQL, Spark
-- **Tools:** Notion, Figma, Jira (administered for HSBC AM), Linear-equivalent Agile tooling
+- **Tools:** Notion, Figma, Jira (administered for HSBC AM)
 - **Leadership:** Presales, Customer Success, Cross-functional delivery (Eng/Design/GTM), Team Leadership, Stakeholder Management
 
 ## Languages
 English: fluent (C1+, spoken and written) · French: mother tongue · German: intermediate
-
----
-## Note on residual gaps (honest, not smoothed over)
-No direct prior experience building an AI-agent evaluation/QA loop (golden datasets, regression testing) specifically for agent output — closest evidence is pre-AI, large-scale financial-model-library QA at Reuters. See package.md for how this is framed in interview prep.

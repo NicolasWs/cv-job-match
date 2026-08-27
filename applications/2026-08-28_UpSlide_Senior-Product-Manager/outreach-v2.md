@@ -4,15 +4,15 @@
 
 Dear Matteo,
 
-UpSlide's Refine team is solving a problem I've lived from the inside for over a decade: the gap between what a great financial analyst produces by hand — a pitch deck, a model, a CIM — and what the tools around them actually help with. I've spent my career on both sides of that gap, from PowerPoint- and Excel-heavy client delivery inside Sophis and FusionRisk, to shipping an AI-native product end-to-end this year.
+UpSlide's Refine team is solving a problem I know from the inside: the gap between what a great financial analyst produces by hand — a pitch deck, a model, a CIM — and what the tools around them actually help with. I've spent my career on both sides of that gap, from PowerPoint- and Excel-heavy client delivery inside Sophis and FusionRisk, to shipping an AI-native product end-to-end this year.
 
-That most recent project is the clearest proof of fit: I designed and delivered a broker-voting web application for a French asset manager on a full AI Software Development Lifecycle, from initial design to production go-live in under two months. It taught me first-hand what "AI-native, not a wrapper" actually takes in practice — and where quality control has to live for the output to be trusted by professionals who won't tolerate a sloppy deck or a wrong number in a model.
+That most recent project is the clearest proof of fit: I designed and delivered a broker-voting web application for a French asset manager on a full AI Software Development Lifecycle, from initial design to production go-live in under two months — coordinating directly with the engineers building it and the client stakeholders shaping requirements week to week, the same cross-functional rhythm I'd expect with UpSlide's Engineering and Design teams on Refine.
 
-That quality-control instinct isn't new for me. Earlier in my career I led functional QA coordinating 80+ FTEs validating analytics and financial-model libraries before release — building the discipline of catching errors before a domain expert ever sees them. It's a direct precursor to the golden-dataset, regression-testing loop this role asks for, even if I haven't yet applied it to agent output specifically — that's the one honest gap I bring, and exactly the kind of problem I want to spend the next few years solving.
+That project also taught me where quality control has to live: professionals won't tolerate a sloppy deck or a wrong number in a model. I've built that discipline before — earlier in my career I led functional QA coordinating 80+ FTEs validating analytics and financial-model libraries before release, catching errors before a domain expert ever saw them. It's a direct precursor to the golden-dataset, regression-testing loop this role asks for, even if I haven't yet applied it to agent output specifically — that's the one honest gap I bring.
 
-I also know how to run discovery with the users UpSlide builds for: I onboarded HSBC GAM as Opensee's first cloud and first asset-manager client, and spent five years at Finastra running workshops with 30+ investment banks and asset managers, translating how their best analysts actually work into product requirements. And shipping the broker-voting app wasn't a solo effort — it meant coordinating directly with the engineers building it and the client stakeholders shaping requirements week to week, the same cross-functional rhythm I'd expect with UpSlide's Engineering and Design teams on Refine.
+I also know how to run discovery with the users UpSlide builds for: I onboarded HSBC GAM as Opensee's first cloud and first asset-manager client, and spent five years at Finastra running workshops with 30+ investment banks and asset managers, translating how their best analysts actually work into product requirements.
 
-I'd welcome the chance to talk through how I'd approach scoping and evaluating UpSlide's first wave of deck- and model-refining agents.
+I'd like to walk you through how I'd scope and evaluate the first wave of deck- and model-refining agents for Refine — could we find 30 minutes this week or next?
 
 Best,
 Nicolas Wajs
