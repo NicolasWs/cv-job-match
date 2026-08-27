@@ -1,18 +1,17 @@
-# Secrets — never commit real API keys
-.env
-*.env
-!.env.example
 
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
-
-# OS cruft
-.DS_Store
-
-# Pipeline working data — raw scrape dumps are large and regenerable.
-# seen-jobs.json IS committed: it is the cross-run dedupe history.
 data/last-raw.json
 data/*.tmp.json
+.DS_Store
+*.env
+.env
+!.env.example
+# OS cruft
+# Pipeline working data — raw scrape dumps are large and regenerable.
+*.pyc
+__pycache__/
+# Python
+# Secrets — never commit real API keys
+# seen-jobs.json IS committed: it is the cross-run dedupe history.
+.venv/
+venv/
+.venv-docx/
