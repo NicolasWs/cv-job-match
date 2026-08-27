@@ -1,16 +1,16 @@
 # write-outreach — Euronext, Project Manager (Primary Markets)
 
-## Cover Letter (v2 — after Cover Letter Reviewer feedback)
+## Cover Letter (v3 — final, after second round of reviewer findings)
 
 Dear Hiring Manager,
 
-Euronext just opened IPOready 2026 — its eleventh cohort and the largest pre-IPO programme in Europe, with over 160 companies enrolled. That kind of growth puts real pressure on Primary Markets' internal delivery capacity: more initiatives, more cross-functional coordination, more governance discipline needed to keep them all moving. That's the exact gap I've spent 15 years closing in financial-market infrastructure — structuring delivery across business, technology, legal, and regulatory workstreams so a growing pipeline doesn't outrun its own governance.
+Euronext just opened IPOready 2026 — its eleventh cohort and the largest pre-IPO programme in Europe, with over 160 companies enrolled. That kind of growth puts real pressure on Primary Markets' internal delivery capacity: more initiatives, more cross-functional coordination — business, sales, finance, technology, legal, regulatory — and more governance discipline needed to keep them all moving. That's the exact gap I've spent 15 years closing in financial-market infrastructure: structuring delivery so a growing pipeline doesn't outrun its own governance, with the experience mapping directly to supporting a Project Lead rather than replacing one.
 
-At Sophis, I chaired steering committees and delivered 7 projects across Europe — implementations and upgrades spanning portfolio management, front-to-back, risk, and compliance systems — coordinating 25+ consultants across IT, toolkit development, and Front/Middle/Back Office. At Opensee, I defined the use cases, client journeys, and functional requirements for our first cloud/asset-manager rollout from a blank page, then owned the ISO 27001/SOC 2 compliance delivery workstream that came with it — reporting weekly to the CTO on delivery status, risks, and issues. That's the same governance discipline this role asks for: decision logs, action trackers, consolidated reporting to a Project Lead and senior stakeholders.
+At Sophis, I chaired steering committees and delivered 7 projects across Europe — implementations and upgrades spanning portfolio management, front-to-back, risk, and compliance systems — coordinating 25+ consultants across IT, toolkit development, and Front/Middle/Back Office. At Opensee, I defined the use cases, client journeys, and functional requirements for our first cloud/asset-manager rollout from a blank page, then owned the ISO 27001 and SOC 2 compliance delivery workstream that came with it — reporting weekly to the CTO on delivery status, risks, and issues. That's the same governance discipline this role asks for: decision logs, action trackers, consolidated reporting to a Project Lead and senior stakeholders.
 
 What draws me to this specific role is that product-design half alongside the pure PM discipline — structuring use cases and business-case inputs for a solution that's still being defined. Opensee's early-stage SaaS rollout was exactly that kind of blank-page problem, and I'd bring the same instinct to a Primary Markets initiative crossing product, technology, legal, and go-to-market at a moment when Euronext's IPO pipeline is scaling.
 
-I'd welcome the chance to discuss how this experience translates to supporting your Project Lead on this initiative.
+I'd welcome a short call to walk through how the Opensee SaaS-rollout structure — use cases, governance cadence, compliance workstream — applies to this initiative's early-stage phase.
 
 Best regards,
 Nicolas Wajs

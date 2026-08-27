@@ -70,7 +70,7 @@ Freelance since July 2025 by deliberate choice — building a portfolio of full-
 
 **Talking points (4-5, tuned to this role):**
 - Governance-first delivery: steering committees, decision logs, action trackers — not just "I managed projects," but the specific artifacts this role explicitly asks for.
-- Regulatory/compliance delivery as a first-class workstream, not an afterthought (GDPR/ISO27001/SOC2 experience maps directly to the posting's compliance line).
+- Regulatory/compliance delivery as a first-class workstream, not an afterthought (ISO27001/SOC2 experience maps directly to the posting's compliance line).
 - Comfortable structuring an undefined target solution — Opensee's early-stage rollout is the direct precedent for "product design support" on a not-yet-fully-specified initiative.
 - Cross-geography, cross-seniority stakeholder management is a repeated pattern (NYC/Brussels/Amsterdam/Paris/Verona; CTO-level reporting; steering committee chairs).
 - Honest positioning on primary-markets: strong adjacent capital-markets depth (post-trade/risk/portfolio management), real gap on primary-issuance specifics — frame as fast ramp-up, not blind spot.

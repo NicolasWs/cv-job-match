@@ -8,7 +8,7 @@ Nicolas.Wajs@gmail.com · +33 6 8089 4962 ·
 
 ---
 
-15+ years structuring and driving delivery of complex, cross-functional projects in financial services — steering committees, RFP/RFQ coordination, regulatory and compliance delivery (GDPR, ISO 27001, SOC 2), and consolidated reporting to CTO and senior stakeholder audiences across 5+ countries. Capital-markets domain experience spans post-trade, risk, portfolio-management platforms and, at Opensee, structuring product design — use cases, client journeys, and functional requirements — for a solution adjacent to issuer and investment-platform workflows. Currently applying the same delivery discipline as an independent Product & Project Lead, including a full AI-assisted delivery from design to production in under two months.
+15+ years structuring and driving delivery of complex, cross-functional projects in financial services — steering committees, RFP/RFQ coordination, regulatory and compliance delivery (ISO 27001, SOC 2), and consolidated reporting to CTO and senior stakeholder audiences from analyst to C-level across 5+ countries. Capital-markets domain experience spans post-trade, risk, portfolio-management platforms and, at Opensee, structuring product design — use cases, client journeys, and functional requirements — for a solution adjacent to issuer and investment-platform workflows. Currently applying the same delivery discipline as an independent Product & Project Lead, including a full AI-assisted delivery from design to production in under two months.
 
 ---
 
@@ -60,7 +60,7 @@ Nicolas.Wajs@gmail.com · +33 6 8089 4962 ·
 
 - **Project Governance:** Steering committees, RFP/RFQ/RFI coordination, decision logs, action trackers, status reporting to CTO/senior management, risk & issue escalation
 - **Product Design Support:** Use cases, client journeys, functional requirements, business-case inputs (revenue/cost/investment assumptions)
-- **Regulatory & Compliance:** GDPR, ISO 27001, SOC 2, vendor management, PRM-certified risk analysis (market, counterparty, operational)
+- **Regulatory & Compliance:** ISO 27001, SOC 2, vendor management, PRM-certified risk analysis (market, counterparty, operational)
 - **Capital Markets Domain:** Portfolio management, front-to-back trading, risk systems (Sophis, FusionRisk), market data (Reuters/Eikon), credit derivatives & securitization, issuer/investment-platform-adjacent product design
 - **Delivery:** Cross-functional team coordination (25+ consultants), stakeholder management across 5+ countries, agile/hybrid/waterfall delivery, project planning & tracking (Jira and equivalent tools)
 - **Tools:** PowerPoint, Excel, Jira, Python/SQL, Cloud (GCP/AWS)
