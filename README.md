@@ -203,6 +203,30 @@ leaving it on a schedule.
 
 ---
 
+## CV Coach — the unattended two-agent pair
+
+Two skills run this pipeline autonomously via a Hermes cron job (they live in
+the Hermes skill store, `~/.hermes/skills/cv-coach/`, not in `.claude/skills/`
+here, because they run outside a Claude Code session):
+
+- **Agent 1 — `scan-jobs`** wraps `find-opportunities` and, on a schedule
+  (Hermes cron job `cv-coach-scan`), auto-hands off to Agent 2 for any job
+  scoring **Fit Score >= `coach.auto_prep_min_score`** in
+  `config/search-profile.yaml` (default **9.3/10 = ">93%"** match) — no
+  human checkpoint, by deliberate design at that bar.
+- **Agent 2 — `prep-application`** runs `cv-match` → **CV Reviewer**
+  sub-agent (independent recruiter persona) → `write-outreach` → **Cover
+  Letter Reviewer** sub-agent (hiring-manager persona) → `interview-prep`,
+  builds the usual `applications/<date>_<company>_<role>/` package, and
+  additionally publishes a **Notion interview cheat-sheet page** per job
+  under `coach.notion_parent_page_id` — key stories, metrics, talking
+  points, Q&A, and the final cover letter, ready to skim before walking in.
+
+Both never send, apply, or message anyone — same hard rule as everything
+else in this repo. Trigger manually with "run the cv coach scan" / "prep
+this application for X", or let the cron job run it (`coach.scan_schedule`
+in the config, default every 6h).
+
 ## Repo layout
 
 ```

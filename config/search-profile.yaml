@@ -211,3 +211,18 @@ boards:
   wttj: true
   hellowork: true
   glassdoor: true
+
+# ----------------------------------------------------------------------------
+# CV COACH — the autonomous scan-agent + prep-agent pair (cron-driven)
+# ----------------------------------------------------------------------------
+coach:
+  # scan-jobs (cron, unattended): only auto-trigger the prep pipeline for
+  # jobs scoring at or above this Fit Score. 9.3 == the ">93%" bar the user
+  # asked for on the existing 0-10 scale (9.3/10 = 93%).
+  auto_prep_min_score: 9.3
+  # Notion parent page under which each job gets its own interview cheat-sheet
+  # sub-page. "Job Search" — https://app.notion.com/p/Job-Search-3ab05073c5b08061bc12e92aa903bebc
+  notion_parent_page_id: "3ab05073-c5b0-8061-bc12-e92aa903bebc"
+  # How often the unattended scan runs (informational; actual schedule lives
+  # in the Hermes cron job "cv-coach-scan")
+  scan_schedule: "every 6h"
