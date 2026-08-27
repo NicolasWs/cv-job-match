@@ -1,20 +1,21 @@
 ---
 name: write-outreach
-description: Draft tailored outreach for a specific job — a cover letter, a recruiter/hiring-manager email, and a LinkedIn connection message — using Nicolas's profile and the target posting. Use whenever the user wants a cover letter, an email to a company, or a LinkedIn message for a role, or says "draft outreach", "write to them", "cover letter".
+description: Draft tailored outreach for a specific job — cover letter, recruiter/hiring-manager email, and LinkedIn message — then refine each through a blind evaluator loop until it scores ≥95/100 or honestly plateaus. Use whenever the user wants a cover letter, an email to a company, or a LinkedIn message for a role, or says "draft outreach", "write to them", "cover letter".
 ---
 
-# Write Outreach
+# Write Outreach (with refinement loop)
 
-Draft cover letter, recruiter email, and LinkedIn message for ONE posting.
+Draft cover letter, recruiter email, and LinkedIn message for ONE posting —
+then iterate. The first draft is raw material, not the deliverable.
 
 ## Inputs
-- **structured_profile + positioning** — reuse the output of `cv-match` if it
-  ran this session. Otherwise read the CV matching the job description's
-  language (`context/cv-master-fr.md` for French, `context/cv-master.md` for
-  English — the FR file has richer facts/metrics and is a good source even
-  when writing in English), or ask for the CV.
+- **structured_profile + requirement list + final tailored CV** — reuse
+  `cv-match` output if it ran this session. Otherwise read the CV matching
+  the posting's language (`context/cv-master-fr.md` FR / `context/cv-master.md`
+  EN in the cv-job-match repo; the FR file is the richer fact source even for
+  English output).
 - **Job description** — the target posting.
-- **Company notes** — anything known about the company/team (optional).
+- **Company notes** — `company-intel` output if available, else anything known.
 - **Narrative rules** — `context/narrative-rules.md` if present, else defaults.
 
 ## Narrative principles (always apply)
@@ -23,32 +24,65 @@ Draft cover letter, recruiter email, and LinkedIn message for ONE posting.
 - Show continuity; freelance since April 2025 is a deliberate strategic choice.
 - Lead with impact and value delivered.
 
-Style: professional, positive, impact-focused. No clichés, no generic filler,
-no invented facts. Match the posting's language (FR/EN).
+Style: professional, positive, impact-focused. No clichés, no filler, no
+invented facts. Match the posting's language (FR/EN).
 
-## Produce three assets
+## Phase 1 — Draft the three assets
 
 ### 1. Cover letter (~250–300 words)
-Structure: hook (why this company, specific) → why me (2–3 impact proofs with
-metrics from the experience bank) → fit with the role → close with a clear CTA.
+Hook (why this company, specific — a product, a market move, a real detail) →
+why me (2–3 impact proofs with metrics) → fit with the role → clear CTA.
 
 ### 2. Recruiter / hiring-manager email (~120 words)
-Subject line + short body. Lead with the single strongest relevance point,
+Subject line + short body. Single strongest relevance point first,
 attach-CV mention, one-line CTA. Skimmable.
 
 ### 3. LinkedIn connection message (≤300 characters)
-Warm, specific to the person/role, one reason to connect, soft ask. No pitch dump.
+Warm, specific to the person/role, one reason to connect, soft ask.
+
+Save drafts to files (e.g. `applications/<slug>/outreach-v1.md`) so each
+iteration is diffable.
+
+## Phase 2 — Refinement loop (cover letter, then email)
+
+Up to **3 rounds** per asset (the LinkedIn message gets one review pass, not
+a full loop — it's 300 characters):
+
+**Blind evaluation.** Spawn a general-purpose subagent (Agent tool) that sees
+ONLY: the posting, the company notes, the current draft, and this rubric —
+not the CV, not previous versions or scores, not this conversation. It plays
+a busy hiring manager at THIS company and returns JSON
+`{score:{...,total 0-100}, findings:[{severity, problem, concrete_fix}]}`.
+
+Rubric /100: **company_specificity /25** — could this letter have been sent
+to any other company? every generic sentence costs points; **evidence /25** —
+claims traceable to the CV, with numbers; **jd_mirroring /20** — answers the
+posting's actual asks in its own vocabulary; **structure /15** — hook quality,
+length discipline, one idea per paragraph, real CTA; **voice /15** — no
+clichés ("passionate", "dynamic", "je me permets"), active verbs, sounds like
+a person.
+
+**Revise.** Apply every concrete_fix or reject it with a reason (fabrication
+/ narrative-principle conflict only). Write `outreach-v{n+1}.md`.
+
+**Stop:** total ≥ 95, or gain < 3 points, or 3 rounds. On plateau, report
+what's structurally missing (usually: no real company insight available →
+suggest running `company-intel` and re-looping once with its output).
 
 ## Output format
 ```
-## Cover Letter
-## Recruiter Email  (Subject: … / Body: …)
+## Score trajectory (per asset)
+## Cover Letter (final)
+## Recruiter Email (Subject / Body, final)
 ## LinkedIn Message
+## What the loop changed (2-3 bullets)
 ```
-Then offer: "Want a variant (shorter / warmer / more technical), a follow-up
-message, or contact-finding help (`find-contacts`)?"
+Then offer: a variant (shorter / warmer / more technical), a follow-up
+message, or `interview-prep` for this company.
 
 ## Guardrails
-- Every quantified claim must trace to the CV / experience bank. If a metric
-  isn't in the source, write qualitatively rather than inventing a number.
+- Every quantified claim must trace to the CV / experience bank. No metric in
+  the source → write qualitatively, never invent a number. A fabricated 95
+  is worse than a true 82.
 - Keep the freelance framing deliberate and positive, never apologetic.
+- This skill writes drafts; it never sends anything.

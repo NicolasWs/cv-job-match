@@ -202,3 +202,12 @@ output:
   subfolder_format: "{date}_{company}_{role}"
   # Keep the rolling history so weekly runs can dedupe against past results
   seen_jobs_file: data/seen-jobs.json
+
+# ----------------------------------------------------------------------------
+# BOARDS — which job boards find-opportunities scans (absent = all four)
+# ----------------------------------------------------------------------------
+boards:
+  linkedin: true
+  wttj: true
+  hellowork: true
+  glassdoor: true
