@@ -38,6 +38,11 @@ conceptual agents** behind one orchestrator:
 | LEARNING_PLAN | ⬜ Designed, not yet built (no skill folder exists) |
 | JOB_TRACKER_DESIGN | ✅ Delivered as a one-time design (`tracker/job-tracker-model.md`), not a reusable skill — the tracker itself is a Google Sheet, not something you regenerate per run |
 
+Two skills were added later, outside the original seven-agent design:
+`find-opportunities` (in-session multi-board scanning via Apify — the
+conversational counterpart to the automated n8n scrape) and `run-my-week`
+(an orchestrator chaining the others). Both listed in §1.3.
+
 **Why skills instead of separate agents:** Claude Code's native mechanism for
 "a specialized capability loaded on demand" is a **Skill** — a folder with a
 `SKILL.md` that Claude reads automatically when your request matches its
@@ -46,21 +51,51 @@ each conceptual role, so CV_ANALYZER+JOB_MATCH became one skill
 (`cv-match`) and NARRATIVE_COACH+INTERVIEW_QA became one skill
 (`interview-prep`) — each pair always runs together in practice anyway.
 
-### 1.2 Sub-agents — none are used
+### 1.2 Sub-agents — one deliberate exception
 
-This system does **not** use Claude Code's `Agent`/subagent tool (the
-mechanism that spawns an isolated Explore/general-purpose agent with its own
-context window). Every task here runs as a **single Claude session reading a
-skill's instructions**, not a delegated sub-agent call. This is deliberate:
-the tasks are short, single-pass, and benefit from staying in your main
-conversation (so you can immediately follow up — "make it shorter", "now log
-this job") rather than returning a detached report. If a future task needed
-heavy independent research (e.g. deep-diving a company's culture across many
-sources), a subagent would be the right upgrade — not needed yet.
+Most of this system still does **not** use Claude Code's `Agent`/subagent
+tool (the mechanism that spawns an isolated agent with its own context
+window). Most tasks run as a **single Claude session reading a skill's
+instructions**, not a delegated sub-agent call — deliberate, so you can
+immediately follow up ("make it shorter", "now log this job") without a
+detached report.
+
+The upgrade this section used to say "not needed yet" has now landed, scoped
+narrowly: `cv-match` and `write-outreach` each run a generator→evaluator
+refinement loop where a **blind critic subagent** scores the draft per round
+— it sees only the job posting, a frozen requirement list, and the current
+draft, never the generator's reasoning or prior scores. A critic sharing the
+generator's context tends to rubber-stamp it; independence is the point,
+which is exactly the kind of justification this section originally set as
+the bar.
+
+This only runs where the Agent tool exists — a Claude Code/Cowork session.
+`app/server.py` (the local web app) calls the model APIs directly with no
+subagent mechanism, so there both skills fall back to a single fresh-context
+self-review pass (documented per-skill) instead of the multi-round loop.
+Same skill file either way; the web app just gets one honest look instead of
+several. `find-opportunities`, `interview-prep`, and `run-my-week` use no
+subagents at all.
 
 ### 1.3 Skills reference (the built agents)
 
 Each skill lives in `.claude/skills/<name>/SKILL.md`.
+
+#### `find-opportunities`
+- **Role:** Scan LinkedIn, Welcome to the Jungle, HelloWork, and Glassdoor in
+  parallel via the Apify connector, score each posting against the CV on the
+  standard 0-10 Fit Score, and build a Company Radar (10-15 companies most
+  worth targeting, with a positioning angle each). The in-session
+  counterpart to the automated weekly n8n scrape — use it for an ad-hoc scan
+  or a board the n8n workflow doesn't cover.
+- **Inputs:** `config/search-profile.yaml`, the CV, the local
+  `job_search_matches.xlsx` screening list.
+- **Outputs:** updated screening list (not the Job Application Tracker —
+  see §4), `applications/target-companies-YYYY-MM-DD.md`.
+- **Triggers:** "find opportunities", "scan the boards", "which companies
+  should I target".
+- **Handoff:** its scored list feeds `cv-match` for any job you pick, or the
+  whole thing chains via `run-my-week`.
 
 #### `cv-match`
 - **Role:** Parse the CV, score fit against one job description, produce an
@@ -101,6 +136,19 @@ Each skill lives in `.claude/skills/<name>/SKILL.md`.
 - **Triggers:** "interview prep", "Q&A", "tell me about yourself",
   "storytelling", "prep me for the interview".
 
+#### `run-my-week`
+- **Role:** Orchestrates the others end to end — scan, human picks targets,
+  then per job: intel → `cv-match` → `write-outreach` → package, logging
+  jobs actually pursued to the real Job Application Tracker Sheet. Contains
+  no scraping/writing logic itself; it only sequences the specialist skills.
+- **Inputs:** the same config/CV as the others; resumable state in
+  `data/pipeline-state.json`.
+- **Outputs:** one `applications/<date>_<Company>_<Role>/` package per
+  selected job, tracker rows for jobs the human confirms pursuing.
+- **Triggers:** "run my week", "run the pipeline", "full run".
+- **Human checkpoints:** target selection after the scan, and review before
+  anything is sent — the pipeline never applies or messages on its own.
+
 ### 1.4 Tasks reference (what you actually type)
 
 A "task" here is a discrete thing you ask for — each maps to exactly one
@@ -113,6 +161,8 @@ involved).
 | 2 | **Outreach** | "Draft outreach for this role" | `write-outreach` | ~400 words (3 assets) |
 | 3 | **Interview prep** | "Prep me for the interview at Datadog" | `interview-prep` | ~1000–1800 words |
 | 4 | **Log** | "Log this job: status Applied, priority High" | Direct Google Sheets append (no skill) | 1 row |
+| 5 | **Find opportunities** | "Scan the boards for me" | `find-opportunities` | ~600–1000 words + spreadsheet update |
+| 6 | **Run my week** | "Run my week" | `run-my-week` (orchestrates 1-2-4 above per job) | one package per selected job |
 
 Tasks 1–3 chain naturally in one session: match → outreach → log, then
 interview-prep later once an interview is scheduled. You don't need to name
@@ -163,7 +213,8 @@ git pull origin main
 ### 2.4 Verify the skills loaded
 
 Ask directly: *"What skills are available in this project?"* — Claude
-should list `cv-match`, `write-outreach`, and `interview-prep` with their
+should list `find-opportunities`, `cv-match`, `write-outreach`,
+`interview-prep`, and `run-my-week` with their
 one-line descriptions (the same descriptions from §1.3). If it doesn't see
 them, confirm you opened the **repo root** (the folder containing
 `.claude/`), not a subfolder.

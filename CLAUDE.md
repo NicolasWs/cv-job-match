@@ -21,17 +21,21 @@ python3 pipeline/config_to_n8n.py --write   # rewrites n8n/weekly-job-scrape.jso
 
 **Critical duplication:** filter logic exists twice — Python ([pipeline/filter_jobs.py](pipeline/filter_jobs.py)) and JavaScript (inside the n8n `Code` node in [n8n/weekly-job-scrape.json](n8n/weekly-job-scrape.json)), because the n8n container has no Python. `config_to_n8n.py` keeps the *config* in sync automatically, but if you change filter *logic*, change both files.
 
-## Skills, not sub-agents
+## Skills, mostly no sub-agents
 
-Every user-facing task runs as **a single Claude session reading a skill's instructions** — no `Agent`/subagent tool is used. Skills live in `.claude/skills/<name>/SKILL.md`:
+Every user-facing task runs as **a single Claude session reading a skill's instructions** — the `Agent`/subagent tool is not used, with one deliberate exception below. Skills live in `.claude/skills/<name>/SKILL.md`:
 
 | Skill | Purpose | Handoff |
 |---|---|---|
-| `cv-match` | Parse CV, score fit vs one JD, produce edit list + tailored CV | its `structured_profile` feeds the other two in the same session |
-| `write-outreach` | Cover letter + recruiter email + LinkedIn message | reuses `structured_profile` if `cv-match` ran |
+| `find-opportunities` | Scan LinkedIn + WTTJ + HelloWork + Glassdoor, score each posting (0-10 Fit Score), build a Company Radar | its scored list feeds `cv-match` / `run-my-week` |
+| `cv-match` | Parse CV, score fit vs one JD (Match Score: Strong/Good/Partial), produce edit list + tailored CV, refine the draft in a loop | its `structured_profile` + Match Score feed the other two in the same session |
+| `write-outreach` | Cover letter + recruiter email + LinkedIn message, refined in a loop | reuses `structured_profile` if `cv-match` ran |
 | `interview-prep` | Q&A + STAR stories + one-page cheat sheet | standalone or after a match |
+| `run-my-week` | Orchestrates scan → target selection → per-job build → package, across the others | writes the Job Application Tracker Sheet for jobs actually pursued |
 
-These files are read on every request by both Claude Code sessions and [app/server.py](app/server.py) — edits take effect on the next run, no restart needed. If you edit a skill, both entry points improve.
+**The exception:** `cv-match` and `write-outreach` each run a generator→evaluator refinement loop that spawns a **blind critic subagent** (Agent tool) per round — it sees only the posting, a frozen requirement list, and the current draft, never the generator's reasoning or prior scores, so it can't rubber-stamp its own output. This needs the Agent tool, so it **only runs in a Claude Code/Cowork session**. [app/server.py](app/server.py) calls the model APIs directly with no subagent mechanism, so there it degrades to one fresh-context self-review pass per that skill's documented fallback — same skill file, same result quality on the first pass, just no independent second opinion. `find-opportunities` and `run-my-week` use no subagents at all.
+
+These files are read on every request by both Claude Code sessions and [app/server.py](app/server.py) — edits take effect on the next run, no restart needed. If you edit a skill, both entry points improve (modulo the subagent exception above).
 
 The `prompts/build-package.md` file is a separate, older workflow for building packages directly from the weekly scrape results (bypassing the skill split); the newer path is `cv-match` → `write-outreach`.
 

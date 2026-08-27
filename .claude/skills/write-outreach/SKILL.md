@@ -1,6 +1,6 @@
 ---
 name: write-outreach
-description: Draft tailored outreach for a specific job — cover letter, recruiter/hiring-manager email, and LinkedIn message — then refine each through a blind evaluator loop until it scores ≥95/100 or honestly plateaus. Use whenever the user wants a cover letter, an email to a company, or a LinkedIn message for a role, or says "draft outreach", "write to them", "cover letter".
+description: Draft tailored outreach for a specific job — cover letter, recruiter/hiring-manager email, and LinkedIn message — then refine each through a blind evaluator loop until it scores high or honestly plateaus. Use whenever the user wants a cover letter, an email to a company, or a LinkedIn message for a role, or says "draft outreach", "write to them", "cover letter".
 ---
 
 # Write Outreach (with refinement loop)
@@ -9,10 +9,10 @@ Draft cover letter, recruiter email, and LinkedIn message for ONE posting —
 then iterate. The first draft is raw material, not the deliverable.
 
 ## Inputs
-- **structured_profile + requirement list + final tailored CV** — reuse
-  `cv-match` output if it ran this session. Otherwise read the CV matching
-  the posting's language (`context/cv-master-fr.md` FR / `context/cv-master.md`
-  EN in the cv-job-match repo; the FR file is the richer fact source even for
+- **structured_profile + requirement list + final tailored CV + Match Score**
+  — reuse `cv-match` output if it ran this session. Otherwise read the CV
+  matching the posting's language (`context/cv-master-fr.md` FR /
+  `context/cv-master.md` EN; the FR file is the richer fact source even for
   English output).
 - **Job description** — the target posting.
 - **Company notes** — `company-intel` output if available, else anything known.
@@ -44,6 +44,12 @@ Save drafts to files (e.g. `applications/<slug>/outreach-v1.md`) so each
 iteration is diffable.
 
 ## Phase 2 — Refinement loop (cover letter, then email)
+
+**Only available in a Claude Code / Cowork session** — the blind-evaluation
+step needs the `Agent`/subagent tool. `app/server.py` (the local web app)
+has no subagent mechanism; when running there, do one fresh-context
+self-review pass instead (re-read the draft against the rubric with no
+memory of why you wrote it) and report a single round, no loop.
 
 Up to **3 rounds** per asset (the LinkedIn message gets one review pass, not
 a full loop — it's 300 characters):
