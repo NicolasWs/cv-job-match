@@ -1,3 +1,12 @@
+> **⚠️ DEPRECATED as of 2026-09-11 — read-only / historical reference only.**
+> This Google Sheets tracker model is no longer the active job-application
+> tracking system. Active tracking has moved to a **Notion Kanban DB**
+> (database_id: `dc98669c-8b63-4f20-b6c0-abdafe8222c6`). Everything below
+> this notice is preserved verbatim as historical reference only — do not
+> use it to create new tracking entries.
+
+---
+
 # Job Application Tracker — Sheet Model v1
 
 For Google Sheets or Excel on Drive. Balanced for simplicity + useful automation.

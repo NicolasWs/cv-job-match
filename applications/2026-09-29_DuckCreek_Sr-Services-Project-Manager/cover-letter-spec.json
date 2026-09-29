@@ -1,0 +1,25 @@
+{
+  "page": {"size": "A4", "margin_top_mm": 25, "margin_bottom_mm": 25, "margin_left_mm": 25, "margin_right_mm": 25},
+  "blocks": [
+    {"type": "paragraph", "text": "Nicolas Wajs"},
+    {"type": "paragraph", "text": "Paris, France · Nicolas.Wajs@gmail.com · +33 6 8089 4962 · linkedin.com/in/nicolaswajs2025"},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "Duck Creek Technologies"},
+    {"type": "paragraph", "text": "Re: Senior Services Project Manager — Paris (Hybrid)"},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "Dear Hiring Team,"},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "Duck Creek's position as the intelligent solutions provider for P&C insurance caught my attention for a specific reason: it's a modern SaaS platform business asking its services organization to run the same discipline — schedules, budgets, scope, risk, client governance — that I've spent 24 years delivering inside regulated financial institutions, just in a different vertical."},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "I've led complex implementation and services engagements end to end for banks and asset managers across Europe: as a Consulting Project Manager at Sophis SAS, I delivered seven implementation and upgrade programmes with budgets from €100K to €2M, chairing Steering Committees and leading Statements of Work and effort quotations directly with client sponsors."},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "At Opensee, I owned a flagship asset manager's relationship from first production go-live onward, reporting weekly to their CTO, exceeding contractual SLA targets through the first six months, and building the anomaly-escalation governance process with their operations team. At Finastra, I led discovery and solution design across 30+ institutions and contributed to $500K–$3M upsell and renewal deals. Across all three, the pattern is the same: someone trusted to own the schedule, the risk log, and the client relationship at once, not just one of the three."},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "I'll be direct about the one gap: I have no P&C insurance domain experience specifically. What I bring instead is 24 years inside an adjacent, equally regulated, equally complex discipline — financial markets and risk software — plus native French and fluent professional English, both explicitly required for this Paris hybrid role. I've also led and mentored project teams from 10 to 25+ consultants across Europe and Asia, so staffing and hands-on delivery aren't new territory either."},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "If the bet you're making is that someone who has run this exact kind of delivery discipline for two decades can pick up Duck Creek's specific domain fast, I'd like to talk."},
+    {"type": "paragraph", "text": ""},
+    {"type": "paragraph", "text": "Best regards,"},
+    {"type": "paragraph", "text": "Nicolas Wajs"}
+  ]
+}

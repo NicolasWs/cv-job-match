@@ -28,7 +28,7 @@ This skill produces two different scores — keep them distinct:
 ## Narrative principles (always apply)
 - Emphasize skills and learning, not duration.
 - Stay positive; each mission is an opportunity.
-- Show continuity; freelance since April 2025 is a deliberate strategic choice.
+- Show continuity; freelance since July 2025 is a deliberate strategic choice.
 - Lead with impact and value delivered.
 
 ## Phase 1 — Analysis (once)

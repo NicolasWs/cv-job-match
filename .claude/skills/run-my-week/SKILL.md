@@ -14,8 +14,8 @@ of its own.
 find-opportunities ──▶ CHECKPOINT 1 ──▶ per job: company-intel ─▶ cv-match(loop)
       (scan+radar)      (pick targets)         └▶ write-outreach(loop)
                                                         │
-Log to Tracker ◀── application package  ◀── CHECKPOINT 2 (review)
-   (Google Sheet)
+Log to Tracker ◀── application package ◀── CHECKPOINT 2 (review)
+   (Notion Kanban — manual entry)
 ```
 
 **Subagent note:** the cv-match/write-outreach refinement loops need the
@@ -75,13 +75,16 @@ or not.
 
 ### 5. Log and close the loop
 For each job the human confirms they're pursuing (not just built — actually
-moving forward): append a row to the real **Job Application Tracker —
-Nicolas** Google Sheet via the Drive connector (the same "Log" action
-described in `docs/USER-GUIDE.md` §2.6 Task 3), using the tracker's real
-columns (`tracker/job-tracker-model.md`) — Company, Role, Priority (from
-Fit Score band), Match (Strong/Good/Partial from cv-match), Status "To
-apply", Source/Link, Date Found. This is the only place in the pipeline that
-writes to that Sheet — find-opportunities' local list stays separate.
+moving forward): **manually** track the job in the **Notion Kanban DB**
+(database_id `dc98669c-8b63-4f20-b6c0-abdafe8222c6`). This is manual entry
+only — there is no Notion API/SDK integration in this pipeline yet — until
+NIC-43/NIC-44 ship automation for it. Log the same fields the tracker model
+used to capture: Company, Role, Priority (from Fit Score band), Match
+(Strong/Good/Partial from cv-match), Status "To apply", Source/Link, Date
+Found. The legacy Google Sheet tracker model (`tracker/job-tracker-model.md`)
+is deprecated and kept for historical reference only — do not write to it.
+This is the only place in the pipeline where a pursued job gets logged for
+tracking — find-opportunities' local list stays separate.
 
 Then: append a run summary to `data/pipeline-state.json` and a 5-line recap
 in chat: jobs scanned, funnel, packages built, jobs logged, what needs

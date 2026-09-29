@@ -21,7 +21,7 @@ then iterate. The first draft is raw material, not the deliverable.
 ## Narrative principles (always apply)
 - Emphasize skills and learning, not duration.
 - Stay positive; each mission is an opportunity.
-- Show continuity; freelance since April 2025 is a deliberate strategic choice.
+- Show continuity; freelance since July 2025 is a deliberate strategic choice.
 - Lead with impact and value delivered.
 
 Style: professional, positive, impact-focused. No clichés, no filler, no
