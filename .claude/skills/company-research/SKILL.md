@@ -1,6 +1,6 @@
 ---
 name: company-research
-description: Research a target company for a specific job opportunity — company/website summary, recent significant company news (funding, leadership, restructuring, expansion, product launches), a recent company video, and open-position counts — all sourced, dated, and never fabricated. Use whenever the user asks to "research this company", "look into {Company}", "what's going on at {Company}", or before an application/interview when company context is needed.
+description: Research a target company for a specific job opportunity — company/website summary, recent significant company news (funding, leadership, restructuring, expansion, product launches), a recent company video, open-position counts, and a full investor-style Due Diligence memo (business model, competitive benchmark, financial health, bull/bear case, open questions) — all sourced, dated, and never fabricated. Use whenever the user asks to "research this company", "look into {Company}", "what's going on at {Company}", "do due diligence on {Company}", or before an application/interview when deep company context is needed.
 ---
 
 # Company Research
@@ -18,10 +18,13 @@ This skill has four components, built incrementally across separate tickets:
 | Recent Company News | **implemented** | NIC-52 |
 | Recent company video | **implemented** | NIC-50 |
 | Open position counts | **implemented** | NIC-51 |
+| Due Diligence memo | **implemented** | NIC-54 |
 
 Each section below is self-contained — it can be run independently, or all
-four combined into one brief (assembly of the full brief onto a Notion job
-page is a separate ticket, NIC-53; this skill only produces the content).
+combined into one brief (assembly of the full brief onto a Notion job page is
+a separate ticket, NIC-53; this skill only produces the content). The Due
+Diligence memo is the deep-dive layer — run it whenever the user wants
+investor-grade scrutiny on a company, not just the news/summary sections.
 
 ## Inputs (common to all sections)
 - **Company name** — from the job opportunity/Notion job page. If ambiguous
@@ -193,3 +196,136 @@ _Not yet implemented — placeholder for the sibling ticket._
 ## Section: Open position counts (NIC-51)
 
 _Not yet implemented — placeholder for the sibling ticket._
+
+---
+
+## Section: Due Diligence Memo (NIC-54)
+
+Produce an investor-grade due-diligence memo on the company — the depth a
+professional considering *buying the whole company* would want, not an
+interview-cheat-sheet summary. Reuses Recent Company News (NIC-52) as one
+input rather than re-searching it from scratch.
+
+### 1. Research sweep
+
+Run these searches (adapt wording to the company/sector; skip a row only
+when it is genuinely inapplicable, e.g. no funding history for a 100-year-old
+incumbent — say so, don't skip silently):
+
+| Area | Query pattern |
+|---|---|
+| Business model / market | `"{company}" business model OR "how {company} makes money"` |
+| Market size & category | `"{company}" market size OR "{company}" category leader OR "{company}" market share` |
+| Competitors | `"{company}" vs OR "{company}" competitors OR "{company}" alternative` |
+| Funding / financials | `"{company}" funding round OR valuation OR revenue OR ARR OR profitable` |
+| Leadership & governance | `"{company}" CEO OR leadership OR board OR founder` |
+| Reviews / culture / attrition | `"{company}" glassdoor OR employee reviews OR layoffs` |
+| Risk / controversy | `"{company}" lawsuit OR investigation OR controversy OR churn OR customer complaints` |
+
+Fetch (don't just skim snippets of) the most promising results before citing
+a specific figure, date, or quote — a search-result snippet is not a source,
+the fetched page is. Prefer primary/authoritative sources (company filings,
+investor-relations pages, named mainstream/trade press, Glassdoor/Crunchbase
+aggregate data) over SEO content farms.
+
+### 2. Named competitors — minimum 2, maximum 4
+
+Identify the company's real direct competitors (same product category and
+buyer, not just "same industry"). For each, note one line on how the target
+company compares — product scope, pricing posture, scale/market share,
+funding stage, or technical approach — each claim sourced. If credible
+competitors can't be found/verified, say so rather than guessing from
+category alone.
+
+### 3. Financial snapshot
+
+Report what is actually disclosed, nothing inferred:
+- Funding stage, most recent round amount + date, valuation if public,
+  named investors — for VC-backed companies.
+- Revenue/ARR, profitability, growth rate — only if publicly stated by the
+  company or a named financial press source; never estimate or extrapolate.
+- For private companies with no disclosed financials: state plainly
+  `Financials not publicly disclosed — {Company} is privately held with no
+  reported figures found.` This is a first-class, expected output, not a gap
+  to paper over with a market-size guess.
+
+### 4. Bull case (strengths / differentiators) — 3-5 points
+
+What makes the company attractive/defensible: product differentiation,
+technical moat, team/founder pedigree, market timing, customer traction,
+partnerships, funding runway. Each point cited; each point should be the kind
+of thing a candidate could credibly bring up in an interview as "why I want
+to join."
+
+### 5. Bear case (weaknesses / risks) — 3-5 points
+
+What could go wrong or already has: competitive pressure, funding/runway
+risk, leadership turnover, negative review themes (recurring complaints, not
+one angry outlier), layoffs/restructuring, regulatory or legal exposure,
+customer concentration or churn signals, product/market fit doubts. Each
+point cited. This section exists specifically so weaknesses aren't softened
+or omitted — an honest bear case is the point of the exercise.
+
+### 6. Open questions — 5-8, investor-style
+
+The probing questions a professional doing real due diligence would ask
+before committing (money, or a job) — not generic interview-prep questions.
+Mix of:
+- Questions already answered by research (state the answer + source inline).
+- Questions genuinely unresolved from public sources — flag each
+  `**[ask live]**` as something worth raising with the interviewer/recruiter,
+  since that is a legitimate and impressive thing to ask in an interview.
+
+Examples of the register wanted: "What is the path to profitability given
+the last disclosed burn rate?", "How concentrated is the customer base — is
+there a key-account dependency?", "Has the competitive gap versus {named
+competitor} widened or narrowed in the last 12 months?", "What explains the
+{N}-month gap in leadership announcements / the recent exec departure?"
+
+### 7. Output format
+
+```
+## Due Diligence Memo — {Company}
+_Retrieved: {today's date, YYYY-MM-DD}_
+
+### Thesis
+<1-2 sentences: what this company is, and the one-line investment/career case for or against it>
+
+### Bull Case
+- <point> ([source](url))
+- ...
+
+### Bear Case
+- <point> ([source](url))
+- ...
+
+### Competitive Benchmark
+| Competitor | How {Company} compares |
+|---|---|
+| <name> | <one line, sourced> |
+
+### Financial Snapshot
+<funding stage / round / valuation / investors, or the "not disclosed" line>
+([source](url) where applicable)
+
+### Open Questions
+1. <question> — <answer + source, or **[ask live]**>
+...
+
+### Sources
+- [Title](url) — {YYYY-MM-DD if dated}
+```
+
+### 8. Guardrails
+
+- Never fabricate a figure, quote, competitor, or date. Every factual claim
+  in Bull Case, Bear Case, Financial Snapshot, and answered Open Questions
+  carries an inline source link.
+- Distinct from Recent Company News (NIC-52): that section is 3 recent dated
+  events; this memo is the standing analytical picture. Reuse any NIC-52
+  items that are relevant as Bull/Bear evidence instead of re-fetching them,
+  but don't limit the memo's sourcing to only those 3 items.
+- "Not enough public information to assess X" is a valid, expected answer
+  for small/private companies — never pad with speculation to look thorough.
+- If the company name is ambiguous, disambiguate the same way as the News
+  section (industry/HQ city from the job posting) before researching.

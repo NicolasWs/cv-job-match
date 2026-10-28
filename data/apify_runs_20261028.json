@@ -1,0 +1,165 @@
+{
+  "linkedin": [
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    }
+  ],
+  "indeed": [
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    }
+  ],
+  "wttj": [
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    }
+  ],
+  "hellowork": [
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    }
+  ],
+  "glassdoor": [
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    },
+    {
+      "error": {
+        "error": {
+          "type": "platform-feature-disabled",
+          "message": "Monthly usage hard limit exceeded"
+        }
+      },
+      "status_code": 403
+    }
+  ]
+}

@@ -1,14 +1,16 @@
 ---
 name: find-opportunities
-description: Scan LinkedIn, Welcome to the Jungle, HelloWork, and Glassdoor for new Product Manager / Product Owner roles matching Nicolas's search profile, score each against his CV on the standard 0-10 Fit Score, maintain a local scored-candidates spreadsheet, and produce a Company Radar — the 10–15 companies most actively hiring for his target profile, with a positioning angle for each. Use whenever the user asks to "find opportunities", "scan the boards", "run my week", "look for jobs", "update the job matches", "scout roles", or "which companies should I target".
+description: Scan LinkedIn, Indeed, Welcome to the Jungle, HelloWork, and Glassdoor for new Product Manager / Product Owner roles matching Nicolas's search profile, score each against his CV on the standard 0-10 Fit Score, maintain a local scored-candidates spreadsheet, and produce a Company Radar — the 10–15 companies most actively hiring for his target profile, with a positioning angle for each. Use whenever the user asks to "find opportunities", "scan the boards", "run my week", "look for jobs", "update the job matches", "scout roles", or "which companies should I target".
 ---
 
 # Find Opportunities (multi-board)
 
 Scrape → merge → filter → score (**0-10 Fit Score**, same scale as the
 "score the week" flow in README) → **Company Radar** → local candidates
-list. Runs entirely in-session via the Apify connector. Never applies to a
-job or contacts anyone — it only finds, scores, and logs.
+list. Primary method runs in-session via the Apify connector; when Apify is
+unavailable (quota exhausted, outage, no connector in the current runtime —
+see §2b), fall back to driving a logged-in browser directly. Never applies
+to a job or contacts anyone — it only finds, scores, and logs.
 
 **This is not the Job Application Tracker.** The canonical **Job
 Application Tracker — Nicolas** Google Sheet (`tracker/job-tracker-model.md`)
@@ -48,6 +50,7 @@ minutes; keep polling rather than giving up.
 | Board | Actor | Input mapping (from config) |
 |---|---|---|
 | LinkedIn | `valig/linkedin-jobs-scraper` | `{"titles": search.titles, "location": search.location, "workModes": search.work_modes, "maxAgeDays": filters.max_age_days}` |
+| Indeed | `misceres/indeed-scraper` | one run per title: `{"position": <title>, "country": "FR", "location": "Paris", "maxItems": 100}` (actor has no native age filter — apply `filters.max_age_days` in step 4 instead) |
 | Welcome to the Jungle | `clearpath/welcome-to-the-jungle-jobs-api` | one run per title: `{"query": <title>, "location": "Paris", "countryCode": "FR", "datePosted": <from max_age_days>, "includeDetails": true, "maxItems": 100}` |
 | HelloWork | `solidcode/hellowork-scraper` | `{"searchQueries": search.titles, "location": "Paris", "datePosted": <from max_age_days>, "includeJobDetails": true, "maxResults": 150}` |
 | Glassdoor | `valig/glassdoor-jobs-scraper` | one run per title: `{"keywords": <title>, "location": "Paris (France)", "daysOld": filters.max_age_days, "limit": 100}` |
@@ -57,11 +60,54 @@ match (prefer highest `totalUsers`). If a board's run fails after one retry,
 **continue with the boards that succeeded** and report which board was
 skipped and why. Never fabricate listings.
 
+### 2b. Fallback: direct browser scan (no Apify)
+Use when Apify is unreachable — quota/billing error (`platform-feature-disabled`
+/ "Monthly usage hard limit exceeded"), an outright API outage, or (in Hermes,
+which has no Apify MCP connector) when the REST workaround itself fails. This
+is a real scrape, just manual and per-board instead of fan-out — expect it to
+take longer and skip the Fit Score/xlsx update unless you loop back through
+steps 4–7 by hand. Say plainly that this is the slow/manual path, not Apify,
+when reporting results.
+
+**Technique (learned the hard way — don't re-discover this):**
+- Needs a logged-in browser session (reuse the existing authenticated session;
+  don't attempt credentials yourself — see the vault note in global guidance).
+- LinkedIn's current UI ships obfuscated, rotating CSS class names (its
+  "AI-powered job search" redesign) — CSS selectors for job cards break
+  silently and return 0 results. Use the **accessibility tree** instead:
+  `cdp('Accessibility.getFullAXTree')['nodes']`, filter for `role == 'button'`
+  or `'link'` whose `name` contains the job title text, then
+  `cdp('DOM.getBoxModel', backendNodeId=...)` for click coordinates and
+  `click_at_xy(x, y)` to open that job's detail pane. Read `js('location.href')`
+  afterwards to capture the numeric id (`currentJobId=NNNNNNN` on LinkedIn) and
+  build the canonical `https://www.linkedin.com/jobs/view/<id>` URL.
+- **Never trust the on-page relative-time label** ("2h ago", "Reposted X hours
+  ago", "Posted today") as proof of freshness — it drifts and is sometimes
+  flat wrong; the same listing re-checked a few hours later showed "4 days
+  ago". The only trustworthy freshness signal is the **search filter
+  parameter at scan time** (`f_TPR=r86400` = within 24h when the search ran).
+  Stamp every report with the exact scan timestamp and treat "is this still
+  today's list" as a new question requiring a fresh scan, never an assumption.
+  Listings also vanish between checks ("This job is no longer available") —
+  that's normal churn, not an error.
+- If the browser backend itself is down (`BU_CDP_URL unreachable` /
+  connection refused), it's usually transient — wait 10–15s and retry once or
+  twice before reporting it as a blocker.
+- URL patterns to drive directly (swap in `search.titles` / `search.location`):
+  - LinkedIn: `https://www.linkedin.com/jobs/search/?keywords=<title>&location=<location>&f_TPR=r86400` (`r86400`=24h, `r604800`=7d, `r2592000`=30d).
+  - Indeed (France): `https://fr.indeed.com/jobs?q=<title>&l=<location>&fromage=1` (`fromage` = max age in days: 1/3/7/14).
+  - WTTJ / HelloWork / Glassdoor: same idea — use each site's own search UI
+    and date-posted filter; apply the same AX-tree technique since markup
+    varies and breaks CSS selectors just as often.
+- Indeed frequently throws a CAPTCHA or a hard login wall to anonymous/bot
+  traffic. If blocked after one retry, say so and continue with whatever
+  boards did work — don't fight a CAPTCHA, don't fabricate Indeed results.
+
 ### 3. Normalise and merge across boards
 Map every raw item to
 `{id, title, company, location, salary, contract_type, posted_at, age_days,
-url, description, source}` where `source` ∈ {linkedin, wttj, hellowork,
-glassdoor}.
+url, description, source}` where `source` ∈ {linkedin, indeed, wttj,
+hellowork, glassdoor}.
 
 Cross-board dedup: exact same URL → duplicate; else normalise `company`
 (lowercase, strip legal suffixes like SAS/SA/SARL) + normalise `title`
@@ -129,8 +175,9 @@ actually being pursued — never from this skill directly.
 ```yaml
 boards:
   linkedin: true
+  indeed: true
   wttj: true
   hellowork: true
   glassdoor: true
 ```
-Absent section = all four.
+Absent section = all five.

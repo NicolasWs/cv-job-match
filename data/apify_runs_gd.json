@@ -1,0 +1,32 @@
+[
+  {
+    "title": "AI Product Manager",
+    "raw": {
+      "error": "{\n  \"error\": {\n    \"type\": \"platform-feature-disabled\",\n    \"message\": \"Monthly usage hard limit exceeded\"\n  }\n}"
+    }
+  },
+  {
+    "title": "Head of Product",
+    "raw": {
+      "error": "{\n  \"error\": {\n    \"type\": \"platform-feature-disabled\",\n    \"message\": \"Monthly usage hard limit exceeded\"\n  }\n}"
+    }
+  },
+  {
+    "title": "Product Manager Fintech",
+    "raw": {
+      "error": "{\n  \"error\": {\n    \"type\": \"platform-feature-disabled\",\n    \"message\": \"Monthly usage hard limit exceeded\"\n  }\n}"
+    }
+  },
+  {
+    "title": "Lead Product Manager",
+    "raw": {
+      "error": "{\n  \"error\": {\n    \"type\": \"platform-feature-disabled\",\n    \"message\": \"Monthly usage hard limit exceeded\"\n  }\n}"
+    }
+  },
+  {
+    "title": "Director of Product",
+    "raw": {
+      "error": "{\n  \"error\": {\n    \"type\": \"platform-feature-disabled\",\n    \"message\": \"Monthly usage hard limit exceeded\"\n  }\n}"
+    }
+  }
+]

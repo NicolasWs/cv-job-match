@@ -204,10 +204,11 @@ output:
   seen_jobs_file: data/seen-jobs.json
 
 # ----------------------------------------------------------------------------
-# BOARDS — which job boards find-opportunities scans (absent = all four)
+# BOARDS — which job boards find-opportunities scans (absent = all five)
 # ----------------------------------------------------------------------------
 boards:
   linkedin: true
+  indeed: true
   wttj: true
   hellowork: true
   glassdoor: true

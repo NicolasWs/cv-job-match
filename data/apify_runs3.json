@@ -1,0 +1,208 @@
+{
+  "wttj_extra": {
+    "data": {
+      "id": "j5vELmcaklNCWS87T",
+      "actId": "MdJIadsWKRaguareT",
+      "userId": "6TXm6dzgqpeewMczK",
+      "startedAt": "2026-10-05T06:02:24.315Z",
+      "finishedAt": null,
+      "status": "READY",
+      "meta": {
+        "origin": "API",
+        "userAgent": "Python-urllib/3.14"
+      },
+      "stats": {
+        "inputBodyLen": 218,
+        "migrationCount": 0,
+        "rebootCount": 0,
+        "restartCount": 0,
+        "resurrectCount": 0,
+        "computeUnits": 0
+      },
+      "options": {
+        "build": "latest",
+        "timeoutSecs": 600,
+        "memoryMbytes": 256,
+        "maxItems": 15189,
+        "maxTotalChargeUsd": 0.151891,
+        "isMaxTotalChargeUsdSetByUser": false,
+        "diskMbytes": 512
+      },
+      "buildId": "D3AD61Ignp0ALZPPB",
+      "defaultKeyValueStoreId": "xR3fc49sW3gel5fUM",
+      "defaultDatasetId": "iuaPxgyGfV6eZmmqM",
+      "defaultRequestQueueId": "ayE76e6dontOkNhu4",
+      "storageIds": {
+        "keyValueStores": {
+          "default": "xR3fc49sW3gel5fUM"
+        },
+        "datasets": {
+          "default": "iuaPxgyGfV6eZmmqM"
+        },
+        "requestQueues": {
+          "default": "ayE76e6dontOkNhu4"
+        }
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": null,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-03-02T06:50:35.314Z",
+        "createdAt": "2026-03-02T06:50:35.931Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "apify-actor-start": {
+              "eventTitle": "Actor Start",
+              "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+              "isOneTimeEvent": true,
+              "eventPriceUsd": 5e-05
+            },
+            "apify-default-dataset-item": {
+              "eventTitle": "result",
+              "eventDescription": "Single result in the default dataset.",
+              "eventPriceUsd": 1e-05
+            },
+            "item-scraped": {
+              "eventTitle": "Job",
+              "eventDescription": "Cost per job scraped with full details",
+              "isOneTimeEvent": false,
+              "eventPriceUsd": 0.00299,
+              "isPrimaryEvent": true
+            }
+          }
+        }
+      },
+      "chargedEventCounts": {
+        "apify-actor-start": 1,
+        "apify-default-dataset-item": 0,
+        "item-scraped": 0
+      },
+      "platformUsageBillingModel": "DEVELOPER",
+      "accountedChargedEventCounts": {
+        "apify-actor-start": 0,
+        "apify-default-dataset-item": 0,
+        "item-scraped": 0
+      },
+      "generalAccess": "FOLLOW_USER_SETTING",
+      "buildNumber": "0.0.29",
+      "containerUrl": "https://wxqagsdzdbc0.runs.apify.net",
+      "usageTotalUsd": 0,
+      "eventUsage": {
+        "apify-actor-start": {
+          "eventTitle": "Actor Start",
+          "eventTotalUsd": 0
+        },
+        "apify-default-dataset-item": {
+          "eventTitle": "result",
+          "eventTotalUsd": 0
+        },
+        "item-scraped": {
+          "eventTitle": "Job",
+          "eventTotalUsd": 0
+        }
+      },
+      "output": {
+        "results": "https://api.apify.com/v2/datasets/iuaPxgyGfV6eZmmqM/items?signature=MC4wLnJLSUt4YjlDZE1LSnhYdm5zZDc4"
+      }
+    }
+  },
+  "hellowork": {
+    "data": {
+      "id": "v46BkxceMNcdxK7VR",
+      "actId": "mKrpmBatihcFby4AI",
+      "userId": "6TXm6dzgqpeewMczK",
+      "startedAt": "2026-10-05T06:02:24.839Z",
+      "finishedAt": null,
+      "status": "READY",
+      "meta": {
+        "origin": "API",
+        "userAgent": "Python-urllib/3.14"
+      },
+      "stats": {
+        "inputBodyLen": 240,
+        "migrationCount": 0,
+        "rebootCount": 0,
+        "restartCount": 0,
+        "resurrectCount": 0,
+        "computeUnits": 0
+      },
+      "options": {
+        "build": "latest",
+        "timeoutSecs": 3600,
+        "memoryMbytes": 512,
+        "maxTotalChargeUsd": 0.151891,
+        "maxItems": 159,
+        "isMaxTotalChargeUsdSetByUser": false,
+        "diskMbytes": 8192
+      },
+      "buildId": "Dz9ga4Iviy4n3jXEf",
+      "defaultKeyValueStoreId": "rgJPEA64z5gGAaQN3",
+      "defaultDatasetId": "NMAaXyhZsgPlz4LcZ",
+      "defaultRequestQueueId": "dVf2h5GxIGAaUG3LT",
+      "storageIds": {
+        "keyValueStores": {
+          "default": "rgJPEA64z5gGAaQN3"
+        },
+        "datasets": {
+          "default": "NMAaXyhZsgPlz4LcZ"
+        },
+        "requestQueues": {
+          "default": "dVf2h5GxIGAaUG3LT"
+        }
+      },
+      "pricingInfo": {
+        "minimalMaxTotalChargeUsd": null,
+        "pricingModel": "PAY_PER_EVENT",
+        "isPriceChangeNotificationSuppressed": false,
+        "startedAt": "2026-05-20T13:30:36.942Z",
+        "createdAt": "2026-05-20T13:30:37.260Z",
+        "apifyMarginPercentage": 0.2,
+        "pricingPerEvent": {
+          "actorChargeEvents": {
+            "apify-actor-start": {
+              "eventTitle": "Actor Start",
+              "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+              "isOneTimeEvent": true,
+              "eventPriceUsd": 5e-05
+            },
+            "apify-default-dataset-item": {
+              "eventTitle": "result",
+              "eventDescription": "Single result in the default dataset.",
+              "eventPriceUsd": 0.00095,
+              "isPrimaryEvent": true
+            }
+          }
+        }
+      },
+      "chargedEventCounts": {
+        "apify-actor-start": 1,
+        "apify-default-dataset-item": 0
+      },
+      "platformUsageBillingModel": "DEVELOPER",
+      "accountedChargedEventCounts": {
+        "apify-actor-start": 0,
+        "apify-default-dataset-item": 0
+      },
+      "generalAccess": "FOLLOW_USER_SETTING",
+      "buildNumber": "1.0.8",
+      "containerUrl": "https://wlmmzvhjlhqj.runs.apify.net",
+      "usageTotalUsd": 0,
+      "eventUsage": {
+        "apify-actor-start": {
+          "eventTitle": "Actor Start",
+          "eventTotalUsd": 0
+        },
+        "apify-default-dataset-item": {
+          "eventTitle": "result",
+          "eventTotalUsd": 0
+        }
+      },
+      "output": {
+        "overview": "https://api.apify.com/v2/datasets/NMAaXyhZsgPlz4LcZ/items?view=overview&signature=MC4wLjFSREV6SUpnT29KY2RIWUlmUWJxWQ",
+        "detail": "https://api.apify.com/v2/datasets/NMAaXyhZsgPlz4LcZ/items?view=detail&signature=MC4wLjFSREV6SUpnT29KY2RIWUlmUWJxWQ"
+      }
+    }
+  },
+  "glassdoor": []
+}

@@ -1,0 +1,20 @@
+{
+  "page": {"size": "A4", "margins": {"top": 25, "bottom": 20, "left": 25, "right": 25}},
+  "blocks": [
+    {"type": "paragraph", "text": "Nicolas Wajs"},
+    {"type": "paragraph", "text": "Nicolas.Wajs@gmail.com \u00b7 +33 6 8089 4962 \u00b7 linkedin.com/in/nicolaswajs2025"},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "Dear Hiring Team,"},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "I'm writing to apply for the AI Engagement Manager role in the AI Factory's AI Use Case Delivery team at Allianz Technology. The brief here is unusual in a good way: it's not a technical delivery role and it's not a pure account-management role, it's the discipline of turning a real Operating Entity pain point into a funded, scoped, de-risked engagement, then staying accountable for it through build and beyond go-live. That's the exact seam I've worked in across financial services for most of my career."},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "At Finastra, I led discovery and solution design across a large portfolio of international financial institutions, working directly with Heads of IT and regional leadership to translate business pain into deliverable roadmaps and to keep competitive, multi-stakeholder bids moving: the same kind of demand-shaping and stakeholder ownership this role calls for, just inside a vendor-to-institution relationship rather than a factory-to-Operating-Entity one. At Opensee, I owned the relationship with our first cloud and first asset-manager client from onboarding onward, which meant staying the accountable face of the engagement well past the initial rollout, not handing it off and moving on. More recently, I took presales leadership on an early-stage generative AI data platform built specifically for insurance companies, sitting with the Operating Entity's actual problem before any build started and shaping it into something a technical squad could execute and a regulated buyer could trust: the same motion this role runs on repeat, across multiple Operating Entities in parallel."},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "What draws me to this specific role is the \"half-pizza squad\" model and the idea that one Operating Entity's solution becomes the next one's head start. It rewards exactly the pattern-transfer instinct I've built moving between institutions and verticals over the years. I've backed that instinct with structured artificial intelligence upskilling (Ecole Polytechnique AI for Business, generative AI frameworks, Dataiku) so I can engage the Forward Deployed Engineers as a genuine technical counterpart, not just a relationship layer above them."},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "I'd welcome the chance to discuss how this combination, regulated financial-services delivery, hands-on AI productization, and comfort owning an engagement from demand-shaping through handover, could plug into the AI Factory's current pipeline of Operating Entity engagements."},
+    {"type": "paragraph", "text": " "},
+    {"type": "paragraph", "text": "Best regards,"},
+    {"type": "paragraph", "text": "Nicolas Wajs"}
+  ]
+}

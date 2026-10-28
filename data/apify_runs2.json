@@ -1,0 +1,576 @@
+{
+  "linkedin": {
+    "id": "T06buNc6AQZbec1eB",
+    "actId": "RIGGeqD6RqKmlVoQU",
+    "userId": "6TXm6dzgqpeewMczK",
+    "startedAt": "2026-10-05T06:01:42.491Z",
+    "finishedAt": null,
+    "status": "READY",
+    "meta": {
+      "origin": "API",
+      "userAgent": "Python-urllib/3.14"
+    },
+    "stats": {
+      "inputBodyLen": 198,
+      "migrationCount": 0,
+      "rebootCount": 0,
+      "restartCount": 0,
+      "resurrectCount": 0,
+      "computeUnits": 0
+    },
+    "options": {
+      "build": "latest",
+      "timeoutSecs": 300,
+      "memoryMbytes": 128,
+      "maxTotalChargeUsd": 0.151891,
+      "maxItems": 379,
+      "isMaxTotalChargeUsdSetByUser": false,
+      "diskMbytes": 2048
+    },
+    "buildId": "vnG9jFidBEUNCkcHS",
+    "defaultKeyValueStoreId": "MIv8GJ71yvWkTvPBi",
+    "defaultDatasetId": "Zv1hSKCDKPqhfr2xT",
+    "defaultRequestQueueId": "9aeeuJqQrXGNZnV4v",
+    "storageIds": {
+      "keyValueStores": {
+        "default": "MIv8GJ71yvWkTvPBi"
+      },
+      "datasets": {
+        "default": "Zv1hSKCDKPqhfr2xT"
+      },
+      "requestQueues": {
+        "default": "9aeeuJqQrXGNZnV4v"
+      }
+    },
+    "pricingInfo": {
+      "minimalMaxTotalChargeUsd": null,
+      "pricingModel": "PAY_PER_EVENT",
+      "isPriceChangeNotificationSuppressed": false,
+      "startedAt": "2026-05-16T16:04:00.517Z",
+      "createdAt": "2026-05-16T16:04:00.414Z",
+      "apifyMarginPercentage": 0.2,
+      "pricingPerEvent": {
+        "actorChargeEvents": {
+          "apify-default-dataset-item": {
+            "eventTitle": "result",
+            "eventDescription": "Single result in the default dataset.",
+            "isOneTimeEvent": false,
+            "isPrimaryEvent": true,
+            "eventPriceUsd": 0.0004
+          },
+          "apify-actor-start": {
+            "eventTitle": "Actor Start",
+            "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+            "isOneTimeEvent": true,
+            "eventPriceUsd": 0.001
+          }
+        }
+      }
+    },
+    "chargedEventCounts": {
+      "apify-default-dataset-item": 0,
+      "apify-actor-start": 1
+    },
+    "platformUsageBillingModel": "DEVELOPER",
+    "accountedChargedEventCounts": {
+      "apify-default-dataset-item": 0,
+      "apify-actor-start": 0
+    },
+    "generalAccess": "FOLLOW_USER_SETTING",
+    "buildNumber": "0.0.21",
+    "containerUrl": "https://96dnj2r4hdnh.runs.apify.net",
+    "usageTotalUsd": 0,
+    "eventUsage": {
+      "apify-default-dataset-item": {
+        "eventTitle": "result",
+        "eventTotalUsd": 0
+      },
+      "apify-actor-start": {
+        "eventTitle": "Actor Start",
+        "eventTotalUsd": 0
+      }
+    },
+    "output": {
+      "results": "https://api.apify.com/v2/datasets/Zv1hSKCDKPqhfr2xT/items?signature=MC4wLk5hSFBRRjRQUGM0VkJVR3BRRDFO"
+    }
+  },
+  "wttj": [
+    {
+      "title": "AI Product Manager",
+      "resp": {
+        "id": "VC6dSct8fIEMRClWa",
+        "actId": "MdJIadsWKRaguareT",
+        "userId": "6TXm6dzgqpeewMczK",
+        "startedAt": "2026-10-05T06:01:43.236Z",
+        "finishedAt": null,
+        "status": "READY",
+        "meta": {
+          "origin": "API",
+          "userAgent": "Python-urllib/3.14"
+        },
+        "stats": {
+          "inputBodyLen": 217,
+          "migrationCount": 0,
+          "rebootCount": 0,
+          "restartCount": 0,
+          "resurrectCount": 0,
+          "computeUnits": 0
+        },
+        "options": {
+          "build": "latest",
+          "timeoutSecs": 600,
+          "memoryMbytes": 256,
+          "maxItems": 15189,
+          "maxTotalChargeUsd": 0.151891,
+          "isMaxTotalChargeUsdSetByUser": false,
+          "diskMbytes": 512
+        },
+        "buildId": "D3AD61Ignp0ALZPPB",
+        "defaultKeyValueStoreId": "JpYqO3mkJImeAw0Tl",
+        "defaultDatasetId": "cFHtTcZp5LLXPEPag",
+        "defaultRequestQueueId": "q9gjWH3oSTuIXYajB",
+        "storageIds": {
+          "keyValueStores": {
+            "default": "JpYqO3mkJImeAw0Tl"
+          },
+          "datasets": {
+            "default": "cFHtTcZp5LLXPEPag"
+          },
+          "requestQueues": {
+            "default": "q9gjWH3oSTuIXYajB"
+          }
+        },
+        "pricingInfo": {
+          "minimalMaxTotalChargeUsd": null,
+          "pricingModel": "PAY_PER_EVENT",
+          "isPriceChangeNotificationSuppressed": false,
+          "startedAt": "2026-03-02T06:50:35.314Z",
+          "createdAt": "2026-03-02T06:50:35.931Z",
+          "apifyMarginPercentage": 0.2,
+          "pricingPerEvent": {
+            "actorChargeEvents": {
+              "apify-actor-start": {
+                "eventTitle": "Actor Start",
+                "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                "isOneTimeEvent": true,
+                "eventPriceUsd": 5e-05
+              },
+              "apify-default-dataset-item": {
+                "eventTitle": "result",
+                "eventDescription": "Single result in the default dataset.",
+                "eventPriceUsd": 1e-05
+              },
+              "item-scraped": {
+                "eventTitle": "Job",
+                "eventDescription": "Cost per job scraped with full details",
+                "isOneTimeEvent": false,
+                "eventPriceUsd": 0.00299,
+                "isPrimaryEvent": true
+              }
+            }
+          }
+        },
+        "chargedEventCounts": {
+          "apify-actor-start": 1,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "platformUsageBillingModel": "DEVELOPER",
+        "accountedChargedEventCounts": {
+          "apify-actor-start": 0,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "generalAccess": "FOLLOW_USER_SETTING",
+        "buildNumber": "0.0.29",
+        "containerUrl": "https://dkzxfqifvhpu.runs.apify.net",
+        "usageTotalUsd": 0,
+        "eventUsage": {
+          "apify-actor-start": {
+            "eventTitle": "Actor Start",
+            "eventTotalUsd": 0
+          },
+          "apify-default-dataset-item": {
+            "eventTitle": "result",
+            "eventTotalUsd": 0
+          },
+          "item-scraped": {
+            "eventTitle": "Job",
+            "eventTotalUsd": 0
+          }
+        },
+        "output": {
+          "results": "https://api.apify.com/v2/datasets/cFHtTcZp5LLXPEPag/items?signature=MC4wLkpBeWtFYW5jbnlzN09mOFhDME5i"
+        }
+      }
+    },
+    {
+      "title": "Head of Product",
+      "resp": {
+        "id": "tHvQFFZ4EUd5cZwky",
+        "actId": "MdJIadsWKRaguareT",
+        "userId": "6TXm6dzgqpeewMczK",
+        "startedAt": "2026-10-05T06:01:43.927Z",
+        "finishedAt": null,
+        "status": "READY",
+        "meta": {
+          "origin": "API",
+          "userAgent": "Python-urllib/3.14"
+        },
+        "stats": {
+          "inputBodyLen": 214,
+          "migrationCount": 0,
+          "rebootCount": 0,
+          "restartCount": 0,
+          "resurrectCount": 0,
+          "computeUnits": 0
+        },
+        "options": {
+          "build": "latest",
+          "timeoutSecs": 600,
+          "memoryMbytes": 256,
+          "maxItems": 15189,
+          "maxTotalChargeUsd": 0.151891,
+          "isMaxTotalChargeUsdSetByUser": false,
+          "diskMbytes": 512
+        },
+        "buildId": "D3AD61Ignp0ALZPPB",
+        "defaultKeyValueStoreId": "nYDjq1qbjwfYENDHY",
+        "defaultDatasetId": "xvxladA1CNtt7Uejm",
+        "defaultRequestQueueId": "Mrndt9hnq3sFNmPQv",
+        "storageIds": {
+          "keyValueStores": {
+            "default": "nYDjq1qbjwfYENDHY"
+          },
+          "datasets": {
+            "default": "xvxladA1CNtt7Uejm"
+          },
+          "requestQueues": {
+            "default": "Mrndt9hnq3sFNmPQv"
+          }
+        },
+        "pricingInfo": {
+          "minimalMaxTotalChargeUsd": null,
+          "pricingModel": "PAY_PER_EVENT",
+          "isPriceChangeNotificationSuppressed": false,
+          "startedAt": "2026-03-02T06:50:35.314Z",
+          "createdAt": "2026-03-02T06:50:35.931Z",
+          "apifyMarginPercentage": 0.2,
+          "pricingPerEvent": {
+            "actorChargeEvents": {
+              "apify-actor-start": {
+                "eventTitle": "Actor Start",
+                "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                "isOneTimeEvent": true,
+                "eventPriceUsd": 5e-05
+              },
+              "apify-default-dataset-item": {
+                "eventTitle": "result",
+                "eventDescription": "Single result in the default dataset.",
+                "eventPriceUsd": 1e-05
+              },
+              "item-scraped": {
+                "eventTitle": "Job",
+                "eventDescription": "Cost per job scraped with full details",
+                "isOneTimeEvent": false,
+                "eventPriceUsd": 0.00299,
+                "isPrimaryEvent": true
+              }
+            }
+          }
+        },
+        "chargedEventCounts": {
+          "apify-actor-start": 1,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "platformUsageBillingModel": "DEVELOPER",
+        "accountedChargedEventCounts": {
+          "apify-actor-start": 0,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "generalAccess": "FOLLOW_USER_SETTING",
+        "buildNumber": "0.0.29",
+        "containerUrl": "https://7he4korfsw6q.runs.apify.net",
+        "usageTotalUsd": 0,
+        "eventUsage": {
+          "apify-actor-start": {
+            "eventTitle": "Actor Start",
+            "eventTotalUsd": 0
+          },
+          "apify-default-dataset-item": {
+            "eventTitle": "result",
+            "eventTotalUsd": 0
+          },
+          "item-scraped": {
+            "eventTitle": "Job",
+            "eventTotalUsd": 0
+          }
+        },
+        "output": {
+          "results": "https://api.apify.com/v2/datasets/xvxladA1CNtt7Uejm/items?signature=MC4wLjFjRk5XeXNrUkNyZnVHTUhWbXJhag"
+        }
+      }
+    },
+    {
+      "title": "Product Manager Fintech",
+      "resp": {
+        "id": "4cC7jYKC87RCm2ZjV",
+        "actId": "MdJIadsWKRaguareT",
+        "userId": "6TXm6dzgqpeewMczK",
+        "startedAt": "2026-10-05T06:01:44.808Z",
+        "finishedAt": null,
+        "status": "READY",
+        "meta": {
+          "origin": "API",
+          "userAgent": "Python-urllib/3.14"
+        },
+        "stats": {
+          "inputBodyLen": 222,
+          "migrationCount": 0,
+          "rebootCount": 0,
+          "restartCount": 0,
+          "resurrectCount": 0,
+          "computeUnits": 0
+        },
+        "options": {
+          "build": "latest",
+          "timeoutSecs": 600,
+          "memoryMbytes": 256,
+          "maxItems": 15189,
+          "maxTotalChargeUsd": 0.151891,
+          "isMaxTotalChargeUsdSetByUser": false,
+          "diskMbytes": 512
+        },
+        "buildId": "D3AD61Ignp0ALZPPB",
+        "defaultKeyValueStoreId": "tOMhk6j1azaBsGbZo",
+        "defaultDatasetId": "21yOs3kwsgxEcEPsQ",
+        "defaultRequestQueueId": "44oK1kz0fLeJzhaXG",
+        "storageIds": {
+          "keyValueStores": {
+            "default": "tOMhk6j1azaBsGbZo"
+          },
+          "datasets": {
+            "default": "21yOs3kwsgxEcEPsQ"
+          },
+          "requestQueues": {
+            "default": "44oK1kz0fLeJzhaXG"
+          }
+        },
+        "pricingInfo": {
+          "minimalMaxTotalChargeUsd": null,
+          "pricingModel": "PAY_PER_EVENT",
+          "isPriceChangeNotificationSuppressed": false,
+          "startedAt": "2026-03-02T06:50:35.314Z",
+          "createdAt": "2026-03-02T06:50:35.931Z",
+          "apifyMarginPercentage": 0.2,
+          "pricingPerEvent": {
+            "actorChargeEvents": {
+              "apify-actor-start": {
+                "eventTitle": "Actor Start",
+                "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                "isOneTimeEvent": true,
+                "eventPriceUsd": 5e-05
+              },
+              "apify-default-dataset-item": {
+                "eventTitle": "result",
+                "eventDescription": "Single result in the default dataset.",
+                "eventPriceUsd": 1e-05
+              },
+              "item-scraped": {
+                "eventTitle": "Job",
+                "eventDescription": "Cost per job scraped with full details",
+                "isOneTimeEvent": false,
+                "eventPriceUsd": 0.00299,
+                "isPrimaryEvent": true
+              }
+            }
+          }
+        },
+        "chargedEventCounts": {
+          "apify-actor-start": 1,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "platformUsageBillingModel": "DEVELOPER",
+        "accountedChargedEventCounts": {
+          "apify-actor-start": 0,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "generalAccess": "FOLLOW_USER_SETTING",
+        "buildNumber": "0.0.29",
+        "containerUrl": "https://yt1psju9x9vd.runs.apify.net",
+        "usageTotalUsd": 0,
+        "eventUsage": {
+          "apify-actor-start": {
+            "eventTitle": "Actor Start",
+            "eventTotalUsd": 0
+          },
+          "apify-default-dataset-item": {
+            "eventTitle": "result",
+            "eventTotalUsd": 0
+          },
+          "item-scraped": {
+            "eventTitle": "Job",
+            "eventTotalUsd": 0
+          }
+        },
+        "output": {
+          "results": "https://api.apify.com/v2/datasets/21yOs3kwsgxEcEPsQ/items?signature=MC4wLjFld1JFSlJyMHBIYnVuMjI1ZkpSbw"
+        }
+      }
+    },
+    {
+      "title": "Lead Product Manager",
+      "resp": {
+        "id": "XWIBuIZ6aM3ktF7PL",
+        "actId": "MdJIadsWKRaguareT",
+        "userId": "6TXm6dzgqpeewMczK",
+        "startedAt": "2026-10-05T06:01:45.508Z",
+        "finishedAt": null,
+        "status": "READY",
+        "meta": {
+          "origin": "API",
+          "userAgent": "Python-urllib/3.14"
+        },
+        "stats": {
+          "inputBodyLen": 219,
+          "migrationCount": 0,
+          "rebootCount": 0,
+          "restartCount": 0,
+          "resurrectCount": 0,
+          "computeUnits": 0
+        },
+        "options": {
+          "build": "latest",
+          "timeoutSecs": 600,
+          "memoryMbytes": 256,
+          "maxItems": 15189,
+          "maxTotalChargeUsd": 0.151891,
+          "isMaxTotalChargeUsdSetByUser": false,
+          "diskMbytes": 512
+        },
+        "buildId": "D3AD61Ignp0ALZPPB",
+        "defaultKeyValueStoreId": "nHYfDRgGZVEScxtZ0",
+        "defaultDatasetId": "dq74zNU7L0J3EUZVp",
+        "defaultRequestQueueId": "sHKzXjjS5fB0F2Z1O",
+        "storageIds": {
+          "keyValueStores": {
+            "default": "nHYfDRgGZVEScxtZ0"
+          },
+          "datasets": {
+            "default": "dq74zNU7L0J3EUZVp"
+          },
+          "requestQueues": {
+            "default": "sHKzXjjS5fB0F2Z1O"
+          }
+        },
+        "pricingInfo": {
+          "minimalMaxTotalChargeUsd": null,
+          "pricingModel": "PAY_PER_EVENT",
+          "isPriceChangeNotificationSuppressed": false,
+          "startedAt": "2026-03-02T06:50:35.314Z",
+          "createdAt": "2026-03-02T06:50:35.931Z",
+          "apifyMarginPercentage": 0.2,
+          "pricingPerEvent": {
+            "actorChargeEvents": {
+              "apify-actor-start": {
+                "eventTitle": "Actor Start",
+                "eventDescription": "Charged when the Actor starts running. Number of events charged depends on Actor memory (one event per GB, minimum one event).",
+                "isOneTimeEvent": true,
+                "eventPriceUsd": 5e-05
+              },
+              "apify-default-dataset-item": {
+                "eventTitle": "result",
+                "eventDescription": "Single result in the default dataset.",
+                "eventPriceUsd": 1e-05
+              },
+              "item-scraped": {
+                "eventTitle": "Job",
+                "eventDescription": "Cost per job scraped with full details",
+                "isOneTimeEvent": false,
+                "eventPriceUsd": 0.00299,
+                "isPrimaryEvent": true
+              }
+            }
+          }
+        },
+        "chargedEventCounts": {
+          "apify-actor-start": 1,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "platformUsageBillingModel": "DEVELOPER",
+        "accountedChargedEventCounts": {
+          "apify-actor-start": 0,
+          "apify-default-dataset-item": 0,
+          "item-scraped": 0
+        },
+        "generalAccess": "FOLLOW_USER_SETTING",
+        "buildNumber": "0.0.29",
+        "containerUrl": "https://jcsk9615pu36.runs.apify.net",
+        "usageTotalUsd": 0,
+        "eventUsage": {
+          "apify-actor-start": {
+            "eventTitle": "Actor Start",
+            "eventTotalUsd": 0
+          },
+          "apify-default-dataset-item": {
+            "eventTitle": "result",
+            "eventTotalUsd": 0
+          },
+          "item-scraped": {
+            "eventTitle": "Job",
+            "eventTotalUsd": 0
+          }
+        },
+        "output": {
+          "results": "https://api.apify.com/v2/datasets/dq74zNU7L0J3EUZVp/items?signature=MC4wLjFmclE2TkJnYWxUQVQ3Q0FlcjhRSQ"
+        }
+      }
+    },
+    {
+      "title": "Director of Product",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    }
+  ],
+  "hellowork": {
+    "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+  },
+  "glassdoor": [
+    {
+      "title": "AI Product Manager",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    },
+    {
+      "title": "Head of Product",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    },
+    {
+      "title": "Product Manager Fintech",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    },
+    {
+      "title": "Lead Product Manager",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    },
+    {
+      "title": "Director of Product",
+      "resp": {
+        "error": "{\n  \"error\": {\n    \"type\": \"concurrent-runs-limit-exceeded\",\n    \"message\": \"By launching this job you will exceed your limit of 5 concurrent Actor runs. Please consider an upgrade to a paid plan at https://console.apify.com/billing/subscription to increase your concurrent Actor runs limit.\"\n  }\n}"
+      }
+    }
+  ]
+}
