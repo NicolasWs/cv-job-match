@@ -191,6 +191,16 @@ scoring:
     recruiter_available: 1 # a named recruiter gives a direct outreach path
   # Jobs below this score are kept in the sheet but flagged "low priority"
   min_priority_score: 6
+  # Dream-job alignment — read live from jobhub's settings.dream_job (free-text,
+  # e.g. "Head of AI Product at a fintech/bank, Paris, remote-friendly, no ESN").
+  # Jobhub is the system of record for this field (jobhub /settings page), not
+  # this file — fetch it at scan time via tools.jobhub_sync.get_settings()
+  # ["dream_job"]. When non-empty, it's an ADDITIONAL adjustment layered on top
+  # of the fixed 0-10 weighted score above (never rebalances the five weights
+  # that already sum to 10) — a swing of up to +/-dream_job_max_adjustment,
+  # judged honestly against how well the posting matches that free-text
+  # description. Empty dream_job (the default) -> no adjustment, score unchanged.
+  dream_job_max_adjustment: 1.5
 
 # ----------------------------------------------------------------------------
 # OUTPUT

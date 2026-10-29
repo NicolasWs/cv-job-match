@@ -31,6 +31,11 @@ tracker with postings nobody decided to pursue yet.
   score against (FR is the richer fact source even for English output).
 - **`job_search_matches.xlsx`** — the local scored-candidates list at the
   repo root; updated in place, never replaced.
+- **jobhub's `settings.dream_job`** — free-text dream-job description,
+  fetched once per scan via `tools.jobhub_sync.get_settings()["dream_job"]`
+  (see `ai-job-search-nico/tools/jobhub_sync.py`; if jobhub is unreachable it
+  returns `None` — treat that the same as an empty dream_job, i.e. skip the
+  adjustment in step 5, never block the scan on it).
 
 ## Procedure
 
@@ -127,10 +132,30 @@ Score each survivor the same way the "score the week" flow does: for each
 dimension in `scoring.weights`, judge honestly whether the posting earns
 that dimension's points (domain/finance-AI overlap, seniority match,
 explicit AI/ML relevance, target-sector bonus, a named recruiter present),
-sum to a **Fit Score out of 10** — never inflated, a 5 is a real 5. One
-line naming the biggest strength and the honest biggest gap. Flag anything
-below `scoring.min_priority_score` as low priority (keep it in the list —
-don't drop it, just rank it low).
+sum to a **Fit Score out of 10** — never inflated, a 5 is a real 5.
+
+**Dream-job adjustment (only when `settings.dream_job` from jobhub is
+non-empty):** after the base 0-10 score above, judge honestly how well this
+specific posting matches that free-text description (role, sector, location,
+work mode, anything else the user wrote) and apply a signed adjustment in
+`[-scoring.dream_job_max_adjustment, +scoring.dream_job_max_adjustment]`
+(default range ±1.5), then clip the result back to `[0, 10]`. A posting that
+matches the dream job closely gets close to +1.5; a posting that actively
+contradicts it (wrong seniority, wrong sector, wrong location/mode) gets
+close to -1.5; anything in between is graded on the same honest-judgment
+basis as the five base dimensions — never just +1.5/0/-1.5 as a triple
+switch. Name the adjustment explicitly in the rationale, e.g. "+1.2
+dream-job: AI Head-of-Product fintech match" or "-1.0 dream-job: on-site
+only, dream job wants remote" — so the two scoring layers are never
+conflated in the sheet or in jobhub's `match_rationale`. When dream_job is
+empty or jobhub was unreachable, skip this paragraph entirely — base score
+stands unadjusted and the rationale says nothing about it.
+
+One line naming the biggest strength and the honest biggest gap (base score,
+dream-job adjustment if any included). Flag anything below
+`scoring.min_priority_score` as low priority (keep it in the list — don't
+drop it, just rank it low). Low priority is judged on the FINAL
+(post-adjustment) score.
 
 ### 6. Company Radar — the 10–15 companies to target
 Aggregate the scored list **by company**:
